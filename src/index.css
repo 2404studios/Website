@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+/* Prevent overscroll/bounce on iOS */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100dvh;
+  position: fixed;
+  width: 100%;
+  background: #00002b;
+  -webkit-overflow-scrolling: touch;
+}
+
+#root {
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Hide scrollbar utility for reels */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Card transition base */
+.card-transition {
+  transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1),
+              opacity 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform, opacity;
+}
+
+/* Menu overlay transition */
+.menu-transition {
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
