@@ -1,62 +1,172 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback } from "react";
+import { Toaster, toast } from "sonner";
+import confetti from "canvas-confetti";
 
-/**
- * Page 4 - Join Us: Large italic heading, italic subtitle,
- * benefits list and email form inside a subtle bordered container.
- * Design: all content centered, form area has a visible border/box.
- */
 export default function JoinPage() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [status, setStatus] = useState("idle");
 
-  const handleSubmit = useCallback((e) => {
-    e.preventDefault();
-    console.log('Signup:', email);
-  }, [email]);
+  const fireConfetti = () => {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+  };
+
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      setStatus("loading");
+
+      if (window.mcCallback) delete window.mcCallback;
+
+      const url =
+        "https://gmail.us9.list-manage.com/subscribe/post-json?u=fe7eeb857b2fecdf9636756e3&id=38a09397b2&f_id=005855e1f0";
+
+      const params = new URLSearchParams({
+        EMAIL: email,
+        FNAME: name,
+        "b_fe7eeb857b2fecdf9636756e3_38a09397b2": "",
+      });
+
+      const script = document.createElement("script");
+      script.src = `${url}&${params.toString()}&c=mcCallback`;
+      script.async = true;
+
+      window.mcCallback = function (data) {
+        if (data.result === "success") {
+          setStatus("success");
+          setEmail("");
+          setName("");
+
+          fireConfetti();
+
+          toast.success("You’re in 🚀", {
+            description: "Welcome to 2404 Originals",
+          });
+        } else {
+          setStatus("error");
+          toast.error("Something went wrong. Try again.");
+        }
+      };
+
+      document.body.appendChild(script);
+    },
+    [email, name]
+  );
 
   return (
     <div
-      className="flex flex-col items-center justify-center h-full w-full px-6 bg-[#11002b]"
+      className="relative min-h-dvh px-4 py-10 pb-24 overflow-y-auto"
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
-      {/* Heading */}
-      <h2 className="text-white text-4xl md:text-6xl font-bold italic m-0 mb-3">
-        JOIN US
-      </h2>
+      {/* Toasts */}
+      <Toaster
+        position="top-center"
+        richColors
+        toastOptions={{
+          style: {
+            background: "rgba(20,0,51,0.9)",
+            color: "#fff",
+            border: "1px solid rgba(255,255,255,0.15)",
+            backdropFilter: "blur(10px)",
+          },
+        }}
+      />
 
-      {/* Subtitle */}
-      <p className="text-white/80 text-sm md:text-base italic mb-8 text-center">
-        We'd love to have you on this adventure of a life time
-      </p>
+      {/* Background */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/backgroundlt.png')" }}
+      />
 
-      {/* Bordered container with benefits + form */}
-      <div className="w-full max-w-md border border-white/20 px-6 py-6 md:px-8 md:py-8">
-        {/* Benefits */}
-        <ul className="text-white text-left text-xs md:text-sm list-none p-0 m-0 space-y-2 mb-6">
-          <li className="font-bold">+ Free In-game Credits</li>
-          <li className="font-bold">+ First year purchase bonuses on our video games</li>
-          <li className="font-bold">+ Exclusive game testing</li>
-        </ul>
+      {/* MAIN CONTENT */}
+      <div className="relative w-full max-w-4xl text-center text-white mx-auto pb-10">
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="youremail@mail.com"
-            required
-            className="w-full px-4 py-3 bg-transparent border-b border-white/30 text-white text-xs italic min-h-[44px] outline-none"
-            style={{ fontFamily: "'Inter', sans-serif" }}
-            aria-label="Email address"
-          />
+        {/* TITLE */}
+        <div className="border border-white/20 bg-white/5 rounded-xl p-4 md:p-5 mb-2 md:mb-6">
+          <h1 className="text-3xl md:text-5xl font-bold">JOIN US</h1>
+        </div>
+
+        {/* INFO */}
+        <div className="border border-white/20 rounded-xl p-4 md:p-6 mb-4 md:mb-6">
+          <p className="text-sm md:text-base text-white max-w-2xl mx-auto leading-relaxed">
+            The Founders Package For the first ones here. Sign up, stay up to date
+            with our newsletters and you become a <b className="italic">2404 Original</b>, a title that
+            closes the moment we launch and never reopens.
+          </p>
+
+          {/* FEATURES */}
+          <div className="flex flex-col md:flex-row gap-3 mt-2 mb-0 justify-center">
+            <div className="border border-white/20 px-4 py-3 text-xs rounded-md flex items-center gap-2">
+              <img src="/movie_clipper.svg" className="w-10 h-8" />
+              Your name in the credits of our first three games
+            </div>
+
+            <div className="border border-white/20 px-4 py-3 text-xs rounded-md flex items-center gap-1">
+              <img src="/logo.svg" className="w-10 h-8" />
+              2404 Network account with founder bonuses locked
+            </div>
+
+            <div className="border border-white/20 px-4 py-3 text-xs rounded-md flex items-center gap-2">
+              <img src="/crown.svg" className="w-10 h-8" />
+              The Original badge. Permanent.
+            </div>
+          </div>
+        </div>
+
+        {/* SUBTEXT */}
+        <p className="italic text-white mb-2">
+          The world will know our games. <br />
+          Only you will have been here first
+        </p>
+
+        {/* FORM */}
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-xl mx-auto flex flex-col gap-3"
+        >
+          {/* Inputs */}
+          <div className="flex flex-col md:flex-row gap-3">
+            <input
+              type="text"
+              placeholder="Your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="w-full md:flex-1 px-4 py-3 rounded-full bg-white/10 border border-white/20 text-white text-sm outline-none focus:ring-2 focus:ring-white/40"
+            />
+
+            <input
+              type="email"
+              placeholder="youremail@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full md:flex-1 px-4 py-3 rounded-full bg-white/10 border border-white/20 text-white text-sm outline-none focus:ring-2 focus:ring-white/40"
+            />
+          </div>
+
+          {/* Button */}
           <button
             type="submit"
-            className="w-full py-3 bg-transparent text-white font-bold text-sm min-h-[44px] border border-white cursor-pointer mt-2"
-            style={{ fontFamily: "'Inter', sans-serif" }}
+            disabled={status === "loading"}
+            className="w-full md:w-auto md:self-center px-8 py-3 rounded-full bg-white text-black font-semibold text-sm transition-all hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-70 disabled:scale-95"
           >
-            Sign Up
+            {status === "loading" && (
+              <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></span>
+            )}
+
+            <span>{status === "loading" ? "Joining" : "Sign Up"}</span>
           </button>
         </form>
+
+        {/* FOOTNOTE */}
+        <p className="text-xs text-white/40 mt-6">
+          Terms & Conditions Apply
+        </p>
       </div>
     </div>
   );

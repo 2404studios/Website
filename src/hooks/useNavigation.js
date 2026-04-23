@@ -61,19 +61,15 @@ export function useNavigation(totalPages, transitionDuration = 600) {
     lockTransition();
   }, [totalPages, lockTransition]);
 
-  // Keyboard: ArrowUp/W = up, ArrowDown/S = down
+  // Keyboard: ArrowUp = up, ArrowDown = down
   useEffect(() => {
     const handleKeyDown = (e) => {
       switch (e.key) {
         case 'ArrowDown':
-        case 's':
-        case 'S':
           e.preventDefault();
           navigate('down');
           break;
         case 'ArrowUp':
-        case 'w':
-        case 'W':
           e.preventDefault();
           navigate('up');
           break;

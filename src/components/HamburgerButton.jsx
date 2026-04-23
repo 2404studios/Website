@@ -1,21 +1,28 @@
-import React from 'react';
+import React from "react";
+import { motion } from "framer-motion";
 
-/**
- * HamburgerButton - Fixed-position menu toggle button.
- * Minimum 44px touch target for mobile accessibility.
- *
- * @param {{ onClick: () => void }} props
- */
 const HamburgerButton = React.memo(function HamburgerButton({ onClick }) {
   return (
-    <button
+    <motion.button
       onClick={onClick}
-      className="fixed top-4 right-4 z-40 min-w-[44px] min-h-[44px] flex flex-col items-center justify-center gap-[6px] bg-transparent border-none cursor-pointer p-2"
-      aria-label="Open menu"
+      whileTap={{ scale: 0.9 }}
+      className="
+        fixed top-4 right-4 z-40
+        w-12 h-12
+        flex flex-col items-center justify-center gap-[5px]
+        rounded-xl
+        backdrop-blur-md
+        border bg-white/2 border border-white/10 rounded-2xl text-white hover:bg-white/8 hover:scale-110 hover:shadow-lg transition duration-300
+        shadow-[0_0_20px_rgba(0,0,0,0.4)]
+        cursor-pointer
+       " aria-label="Open menu"
     >
-      <span className="block w-6 h-[2px] bg-white" />
-      <span className="block w-6 h-[2px] bg-white" />
-    </button>
+      {/* Line 1 */}
+      <span className="block w-6 h-[2px] bg-white/80 rounded-full" />
+
+      {/* Line 2 */}
+      <span className="block w-6 h-[2px] bg-white/80 rounded-full" />
+    </motion.button>
   );
 });
 

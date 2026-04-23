@@ -1,19 +1,26 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 
-/**
- * ReelsContainer - Horizontal scroll-snap container for video content.
- *
- * Design match: 4 panels flush edge-to-edge across full width,
- * each roughly 25% width on desktop, 60% on mobile.
- * Dark maroon (#5a0000) placeholder color matching the mockup.
- * Thin border between panels, flush to screen edges (no side padding).
- *
- * @param {{ videos: Array<{ src: string, poster?: string }> }} props
- */
 const ReelsContainer = React.memo(function ReelsContainer({ videos = [] }) {
   const containerRef = useRef(null);
   const videoRefs = useRef([]);
+  const animationRef = useRef(null);
+  const isPausedRef = useRef(false);
 
+  // 🔥 Duplicate items for seamless looping
+  const items = useMemo(() => {
+    const base =
+      videos.length > 0
+        ? videos
+        : Array.from({ length: 4 }, () => ({
+            src: '',
+            poster: '',
+            placeholder: true,
+          }));
+
+    return [...base, ...base]; // duplicate
+  }, [videos]);
+
+  // 🎥 Intersection Observer (unchanged)
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -41,30 +48,75 @@ const ReelsContainer = React.memo(function ReelsContainer({ videos = [] }) {
     });
 
     return () => observer.disconnect();
-  }, [videos]);
+  }, [items]);
+
+  // 🔥 SEAMLESS AUTO SCROLL
+ useEffect(() => {
+  const container = containerRef.current;
+  if (!container) return;
+
+  const speed = 0.8;
+
+  let itemWidth = 0;
+  let loopWidth = 0;
+
+  const calculateSizes = () => {
+    const firstItem = container.children[0];
+    if (!firstItem) return;
+
+    itemWidth = firstItem.getBoundingClientRect().width;
+    const originalCount = items.length / 2;
+    loopWidth = itemWidth * originalCount;
+
+    // 🔥 START IN THE MIDDLE (CRUCIAL FIX)
+    container.scrollLeft = loopWidth;
+  };
+
+  calculateSizes();
+  window.addEventListener('resize', calculateSizes);
+
+  const scrollStep = () => {
+    if (!container) return;
+
+    if (!isPausedRef.current) {
+      container.scrollLeft += speed;
+    }
+
+    // 🔥 RESET EARLY (before edge shows)
+    if (container.scrollLeft >= loopWidth * 2 - container.clientWidth) {
+      container.scrollLeft = loopWidth;
+    }
+
+    animationRef.current = requestAnimationFrame(scrollStep);
+  };
+
+  animationRef.current = requestAnimationFrame(scrollStep);
+
+  return () => {
+    cancelAnimationFrame(animationRef.current);
+    window.removeEventListener('resize', calculateSizes);
+  };
+}, [items]);
 
   const setVideoRef = useCallback((el, index) => {
     videoRefs.current[index] = el;
   }, []);
 
-  const items = videos.length > 0
-    ? videos
-    : Array.from({ length: 4 }, (_, i) => ({ src: '', poster: '', placeholder: true }));
-
   return (
     <div
       ref={containerRef}
-      data-reels
-      className="hide-scrollbar flex overflow-x-auto snap-x snap-mandatory w-full"
+      className="hide-scrollbar flex overflow-x-auto w-full"
       style={{
         touchAction: 'pan-x',
         WebkitOverflowScrolling: 'touch',
       }}
+      onMouseEnter={() => (isPausedRef.current = true)}
+      onMouseLeave={() => (isPausedRef.current = false)}
     >
       {items.map((item, i) => (
         <div
           key={i}
-          className="snap-start shrink-0 w-[60vw] md:w-[25vw] relative"
+          className="shrink-0 w-[60vw] md:w-[25vw] relative"
           style={{ aspectRatio: '4/3' }}
         >
           {item.placeholder ? (
@@ -72,7 +124,10 @@ const ReelsContainer = React.memo(function ReelsContainer({ videos = [] }) {
               className="w-full h-full"
               style={{
                 backgroundColor: '#5a0000',
-                borderRight: i < items.length - 1 ? '1px solid rgba(255,255,255,0.1)' : 'none',
+                borderRight:
+                  i < items.length - 1
+                    ? '1px solid rgba(42, 20, 121, 0.1)'
+                    : 'none',
               }}
             />
           ) : (
