@@ -100,8 +100,8 @@ const TEAM_MEMBERS = [
     img: '/team/faruq.jpg',
     quote: 'A great level teaches without a single word.',
     skills: ['Unreal Engine', 'Blender', 'Environment design'],
-    topGames: ['Super Mario Odyssey', 'Portal 2', 'Doom Eternal'],
-    relationshipStatus: 'Daz Marriage', instagram: 'https://www.instagram.com/aceblorgames',
+    topGames: ['Fortinite', 'Mortal Kombat', 'FIFA'],
+    relationshipStatus: 'Daz3D', instagram: 'https://www.instagram.com/aceblorgames',
   },
   {
     id: 9, name: 'ZEK', role: 'Web Engineer',
