@@ -11,32 +11,44 @@ export default function ExperiencePage() {
   // Sample testing array with actual .mp4 links - used only one mp4 link in the public folder
 const videoList = [
   { 
-    src: '/test-video.mp4', 
+    src: '/vid/Driver.mp4', 
     poster: '' 
   },
   { 
-    src: '/test-video.mp4', 
+    src: '/vid/favourAnimation.mp4', 
     poster: '' 
   },
   { 
-    src: '/test-video.mp4',
+    src: '/vid/KNC.mp4',
     poster: '' 
   },
   { 
-    src: '/test-video.mp4', 
+    src: '/vid/LocusGodot.mp4', 
     poster: '' 
   },
 
    { 
-    src: '/test-video.mp4', 
+    src: '/vid/LocusUnreal.mp4', 
     poster: '' 
   },
    { 
-    src: '/test-video.mp4', 
+    src: '/vid/Mosun.mp4', 
     poster: '' 
   },
    { 
-    src: '/test-video.mp4', 
+    src: '/vid/Nature.mp4', 
+    poster: '' 
+  },
+   { 
+    src: '/vid/PitRush.mp4', 
+    poster: '' 
+  },
+   { 
+    src: '/vid/StillWalking.mp4', 
+    poster: '' 
+  },
+   { 
+    src: '/vid/Swordsman.mp4', 
     poster: '' 
   }
 ];

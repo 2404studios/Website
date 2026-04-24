@@ -20,7 +20,7 @@ export default function JoinPage() {
     });
   };
 
-  // ✅ NEW submit handler (replaces Mailchimp)
+  // ✅ NEW submit handler
  const handleSubmit = useCallback(
   async (e) => {
     e.preventDefault();
@@ -51,7 +51,7 @@ export default function JoinPage() {
       }
 
       // 🔴 Other errors
-      if (!res.ok) {git status
+      if (!res.ok) {
         throw new Error(data?.message || "Failed to join waitlist");
       }
 
