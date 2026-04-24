@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Toaster, toast } from "sonner";
 import confetti from "canvas-confetti";
 
@@ -6,6 +6,11 @@ export default function JoinPage() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [status, setStatus] = useState("idle");
+
+  // 🔥 Wake up server on load (Render sleep fix)
+  useEffect(() => {
+    fetch("https://waitlist-v0.onrender.com/healthz").catch(() => {});
+  }, []);
 
   const fireConfetti = () => {
     confetti({
@@ -15,47 +20,62 @@ export default function JoinPage() {
     });
   };
 
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      setStatus("loading");
+  // ✅ NEW submit handler (replaces Mailchimp)
+ const handleSubmit = useCallback(
+  async (e) => {
+    e.preventDefault();
+    setStatus("loading");
 
-      if (window.mcCallback) delete window.mcCallback;
+    try {
+      const res = await fetch(
+        "https://waitlist-v0.onrender.com/waitlist",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            email,
+          }),
+        }
+      );
 
-      const url =
-        "https://gmail.us9.list-manage.com/subscribe/post-json?u=fe7eeb857b2fecdf9636756e3&id=38a09397b2&f_id=005855e1f0";
+      const data = await res.json();
 
-      const params = new URLSearchParams({
-        EMAIL: email,
-        FNAME: name,
-        "b_fe7eeb857b2fecdf9636756e3_38a09397b2": "",
+      // 🔴 Handle duplicate email (409)
+      if (res.status === 409) {
+        setStatus("idle");
+        toast.error("You’re already on the waitlist 👀");
+        return;
+      }
+
+      // 🔴 Other errors
+      if (!res.ok) {git status
+        throw new Error(data?.message || "Failed to join waitlist");
+      }
+
+      // ✅ success
+      setStatus("success");
+      setName("");
+      setEmail("");
+
+      fireConfetti();
+
+      toast.success("You’re in 🚀", {
+        description: "Welcome to 2404 Originals",
       });
 
-      const script = document.createElement("script");
-      script.src = `${url}&${params.toString()}&c=mcCallback`;
-      script.async = true;
+    } catch (err) {
+      console.error(err);
+      setStatus("error");
 
-      window.mcCallback = function (data) {
-        if (data.result === "success") {
-          setStatus("success");
-          setEmail("");
-          setName("");
+      toast.error("Something went wrong. Try again.");
+    }
+  },
+  [name, email]
+);
 
-          fireConfetti();
-
-          toast.success("You’re in 🚀", {
-            description: "Welcome to 2404 Originals",
-          });
-        } else {
-          setStatus("error");
-          toast.error("Something went wrong. Try again.");
-        }
-      };
-
-      document.body.appendChild(script);
-    },
-    [email, name]
-  );
 
   return (
     <div
@@ -125,7 +145,6 @@ export default function JoinPage() {
           onSubmit={handleSubmit}
           className="w-full max-w-xl mx-auto flex flex-col gap-3"
         >
-          {/* Inputs */}
           <div className="flex flex-col md:flex-row gap-3">
             <input
               type="text"
@@ -146,7 +165,6 @@ export default function JoinPage() {
             />
           </div>
 
-          {/* Button */}
           <button
             type="submit"
             disabled={status === "loading"}
@@ -155,12 +173,10 @@ export default function JoinPage() {
             {status === "loading" && (
               <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></span>
             )}
-
             <span>{status === "loading" ? "Joining" : "Sign Up"}</span>
           </button>
         </form>
 
-        {/* FOOTNOTE */}
         <p className="text-xs text-white/40 mt-6">
           Terms & Conditions Apply
         </p>
