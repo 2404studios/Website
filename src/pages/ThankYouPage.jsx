@@ -32,7 +32,7 @@ export default function ThankYouPage() {
                 d="M 100, 100 m -70, 0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0"
               />
             </defs>
-            <text fill="white" style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', fontWeight: 'bold', letterSpacing: '6.2px', textTransform: 'uppercase', opacity: 0.8 }}>
+            <text fill="white" style={{ fontFamily: "'Archivo', sans-serif", fontSize: '10px', fontWeight: 'bold', letterSpacing: '6.2px', textTransform: 'uppercase', opacity: 0.8 }}>
               <textPath xlinkHref="#textPath">
                 {text}
               </textPath>

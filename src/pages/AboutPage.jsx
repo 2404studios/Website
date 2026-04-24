@@ -223,7 +223,7 @@ function MemberCard({ member, position, onClick, isMobile }) {
 }
 
 /* ───────────── PAGE ───────────── */
-export default function AboutPage() {
+export default function AboutPage({ isActive }) {
   const [index, setIndex] = useState(0);
   const [modalIndex, setModalIndex] = useState(null);
   const { isMobile } = useWindowSize();
@@ -249,40 +249,48 @@ export default function AboutPage() {
         {/* Dark overlay for better contrast */}
         <div className="absolute inset-0 bg-black/60 pointer-events-none" />
 
-        {/* Carousel Container */}
-        <div className="relative flex items-center justify-center w-full h-[500px]">
-          <AnimatePresence mode="popLayout">
-            <MemberCard
-              key={TEAM_MEMBERS[left].id}
-              member={TEAM_MEMBERS[left]}
-              position="left"
-              onClick={() => setIndex(left)}
-              isMobile={isMobile}
-            />
-            <MemberCard
-              key={TEAM_MEMBERS[index].id}
-              member={TEAM_MEMBERS[index]}
-              position="center"
-              onClick={() => setModalIndex(index)}
-              isMobile={isMobile}
-            />
-            <MemberCard
-              key={TEAM_MEMBERS[right].id}
-              member={TEAM_MEMBERS[right]}
-              position="right"
-              onClick={() => setIndex(right)}
-              isMobile={isMobile}
-            />
-          </AnimatePresence>
-        </div>
+        {/* Animated Content Wrapper */}
+        <motion.div
+          className="absolute inset-0 flex flex-col items-center justify-center w-full h-full"
+          initial={{ opacity: 0, scale: 0.8, y: 40 }}
+          animate={isActive ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 40 }}
+          transition={{ duration: 1, ease: [0.34, 1.56, 0.64, 1] }}
+        >
+          {/* Carousel Container */}
+          <div className="relative flex items-center justify-center w-full h-[500px]">
+            <AnimatePresence mode="popLayout">
+              <MemberCard
+                key={TEAM_MEMBERS[left].id}
+                member={TEAM_MEMBERS[left]}
+                position="left"
+                onClick={() => setIndex(left)}
+                isMobile={isMobile}
+              />
+              <MemberCard
+                key={TEAM_MEMBERS[index].id}
+                member={TEAM_MEMBERS[index]}
+                position="center"
+                onClick={() => setModalIndex(index)}
+                isMobile={isMobile}
+              />
+              <MemberCard
+                key={TEAM_MEMBERS[right].id}
+                member={TEAM_MEMBERS[right]}
+                position="right"
+                onClick={() => setIndex(right)}
+                isMobile={isMobile}
+              />
+            </AnimatePresence>
+          </div>
 
-        {/* Footer Title */}
-        <div className="absolute bottom-42 md:bottom-20 text-center">
-          <h2 className="text-white text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none flex items-center gap-4">
-            <span>TEAM</span>
-            <span className="font-press-start text-3xl md:text-5xl mt-1 opacity-100">2404</span>
-          </h2>
-        </div>
+          {/* Footer Title */}
+          <div className="absolute bottom-42 md:bottom-20 text-center">
+            <h2 className="text-white text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none flex items-center gap-4">
+              <span>TEAM</span>
+              <span className="font-press-start text-3xl md:text-5xl mt-1 opacity-100">2404</span>
+            </h2>
+          </div>
+        </motion.div>
       </div>
 
       {/* Modal — separate component */}

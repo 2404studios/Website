@@ -24,7 +24,7 @@ const SUB_PAGES = [
   }
 ];
 
-export default function OurStoryPage() {
+export default function OurStoryPage({ isActive }) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [imgIdx, setImgIdx] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -87,16 +87,35 @@ export default function OurStoryPage() {
       <div className="absolute inset-0 bg-black/40 pointer-events-none" />
 
       {/* Constellation Visual - Top Center */}
-      <div className="absolute top-4 md:top-8 left-1/2 -translate-x-1/2 w-32 md:w-48 pointer-events-none z-0">
-        <img 
+      <div className="absolute top-4 md:top-8 left-1/2 -translate-x-1/2 w-32 md:w-48 pointer-events-none z-0 flex justify-center">
+        <motion.img 
           src="/taurus_connection.png" 
           alt="Taurus Constellation" 
-          className="w-full h-auto opacity-50"
+          className="w-full h-auto"
+          initial={{ opacity: 0.6 }}
+          animate={{ 
+            opacity: [0.6, 1, 0.6],
+            filter: [
+              "drop-shadow(0 0 10px rgba(255,255,255,0.4))",
+              "drop-shadow(0 0 25px rgba(255,255,255,0.8))",
+              "drop-shadow(0 0 10px rgba(255,255,255,0.4))"
+            ]
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
       </div>
 
-      {/* Responsive Content Layout */}
-      <div className="relative z-10 w-full max-w-6xl flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20 mt-4 md:mt-0">
+      {/* Responsive Content Layout - Wrapped in motion for entrance */}
+      <motion.div 
+        className="relative z-10 w-full max-w-6xl flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20 mt-4 md:mt-0"
+        initial={{ opacity: 0, scale: 0.8, y: 40 }}
+        animate={isActive ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 40 }}
+        transition={{ duration: 1, ease: [0.34, 1.56, 0.64, 1] }}
+      >
         
         {/* Left Side: Large Image Placeholder */}
         <div className="w-full md:w-1/2 flex justify-center md:justify-end">
@@ -126,7 +145,7 @@ export default function OurStoryPage() {
               transition={{ duration: 0.4 }}
               className="flex flex-col"
             >
-              <h2 className="text-white text-[16px] md:text-3xl font-press-start uppercase tracking-tighter mb-4 md:mb-6 leading-relaxed text-center md:text-left opacity-90 whitespace-nowrap">
+              <h2 className="text-white text-[16px] md:text-3xl font-press-start uppercase tracking-tighter mb-4 md:mb-6 leading-relaxed text-center md:text-left whitespace-nowrap">
                 {SUB_PAGES[currentIdx].title}
               </h2>
               
@@ -138,7 +157,7 @@ export default function OurStoryPage() {
                   className="max-h-32 md:max-h-none overflow-y-auto hide-scrollbar mb-20 md:mb-12 w-full"
                   data-no-swipe
                 >
-                  <p className="text-white/80 text-base md:text-xl leading-relaxed font-medium text-center md:text-left pr-4 md:pr-0" data-no-swipe>
+                  <p className="text-white text-base md:text-xl leading-relaxed font-bold text-center md:text-left pr-4 md:pr-0" data-no-swipe>
                     {SUB_PAGES[currentIdx].content}
                   </p>
                 </div>
@@ -196,7 +215,7 @@ export default function OurStoryPage() {
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

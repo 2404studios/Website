@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from "react";
 import { Toaster, toast } from "sonner";
 import confetti from "canvas-confetti";
+import { motion } from 'framer-motion';
 
-export default function JoinPage() {
+export default function JoinPage({ isActive }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [status, setStatus] = useState("idle");
@@ -60,7 +61,7 @@ export default function JoinPage() {
   return (
     <div
       className="relative min-h-dvh px-4 py-10 pb-24 overflow-y-auto flex flex-col justify-center"
-      style={{ fontFamily: "'Inter', sans-serif" }}
+      style={{ fontFamily: "'Archivo', sans-serif" }}
     >
       {/* Toasts */}
       <Toaster
@@ -83,32 +84,37 @@ export default function JoinPage() {
       />
 
       {/* MAIN CONTENT */}
-      <div className="relative w-full max-w-4xl text-center text-white mx-auto pb-10">
+      <motion.div 
+        className="relative w-full max-w-4xl text-center text-white mx-auto pb-10"
+        initial={{ opacity: 0, scale: 0.8, y: 40 }}
+        animate={isActive ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 40 }}
+        transition={{ duration: 1, ease: [0.34, 1.56, 0.64, 1] }}
+      >
 
         {/* TITLE */}
-        <div className="border border-white/20 bg-white/5 rounded-xl p-4 md:p-5 mb-2 md:mb-6">
+        <div className="border border-white/20 bg-black/30 backdrop-blur-sm rounded-xl p-4 md:p-5 mb-2 md:mb-6">
           <h1 className="text-3xl md:text-5xl font-bold">JOIN US</h1>
         </div>
 
         {/* INFO */}
-        <div className="border border-white/20 rounded-xl p-4 md:p-6 mb-4 md:mb-6">
+        <div className="border border-white/20 bg-black/30 backdrop-blur-sm rounded-xl p-4 md:p-6 mb-4 md:mb-6">
           <p className="text-sm md:text-base text-white font-bold max-w-2xl mx-auto leading-relaxed">
             Welcome... Finally You are here. <br /> Wondering what we have in store for you?<br /> Keep reading:
           </p>
 
           {/* FEATURES */}
           <div className="flex flex-col md:flex-row gap-3 mt-2 mb-0 justify-center">
-            <div className="border border-white/20 px-4 py-3 text-xs font-bold rounded-md flex items-center gap-2">
+            <div className="border border-white/20 bg-white/5 px-4 py-3 text-xs font-bold rounded-md flex items-center gap-2">
               <img src="/movie_clipper.svg" className="w-10 h-8" />
               Exclusive BTS(not the music band) content.
             </div>
 
-            <div className="border border-white/20 px-4 py-3 text-xs font-bold rounded-md flex items-center gap-1">
+            <div className="border border-white/20 bg-white/5 px-4 py-3 text-xs font-bold rounded-md flex items-center gap-1">
               <img src="/logo.svg" className="w-10 h-8" />
               2404 Network account with early bonuses Unlocked.
             </div>
 
-            <div className="border border-white/20 px-4 py-3 text-xs font-bold rounded-md flex items-center gap-2">
+            <div className="border border-white/20 bg-white/5 px-4 py-3 text-xs font-bold rounded-md flex items-center gap-2">
               <img src="/crown.svg" className="w-10 h-8" />
               The Original badge. Permanent.
             </div>
@@ -116,7 +122,7 @@ export default function JoinPage() {
         </div>
 
         {/* SUBTEXT */}
-        <p className="italic text-white mb-2">
+        <p className="italic text-white mb-8">
           Sign Up To Get Started...
         </p>
 
@@ -150,13 +156,13 @@ export default function JoinPage() {
           <button
             type="submit"
             disabled={status === "loading"}
-            className="w-full md:w-auto md:self-center px-8 py-3 rounded-full bg-white text-black font-semibold text-sm transition-all hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-70 disabled:scale-95"
+            className="w-full md:w-auto md:self-center px-8 py-3 rounded-full bg-white text-black font-bold text-sm transition-all hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-70 disabled:scale-95 uppercase"
           >
             {status === "loading" && (
               <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></span>
             )}
 
-            <span>{status === "loading" ? "Joining" : "Sign Up"}</span>
+            <span>{status === "loading" ? "Joining" : "SIGN UP"}</span>
           </button>
         </form>
 
@@ -164,7 +170,7 @@ export default function JoinPage() {
         <p className="text-xs text-white/40 mt-6">
           Terms & Conditions Apply
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }

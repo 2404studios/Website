@@ -127,7 +127,7 @@ export default function MemberModal({ member, members, index, onClose, onNav }) 
           <p style={{
             margin: 0, color: '#fff',
             fontSize: 15, lineHeight: 1.6,
-            fontFamily: "'Inter', sans-serif",
+            fontFamily: "'Archivo', sans-serif",
             fontStyle: 'italic',
             opacity: 0.9,
           }}>
@@ -141,7 +141,7 @@ export default function MemberModal({ member, members, index, onClose, onNav }) 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, padding: '20px 32px' }}>
           {/* Skills */}
           <div>
-            <p style={{ margin: '0 0 12px', color: '#fff', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1.5, opacity: 0.5 }}>
+            <p style={{ margin: '0 0 12px', color: '#fff', fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1.5, opacity: 0.5 }}>
               SKILLS
             </p>
             {(member.skills || ['—']).map((s, i) => (
@@ -153,7 +153,7 @@ export default function MemberModal({ member, members, index, onClose, onNav }) 
 
           {/* Top 3 Games */}
           <div>
-            <p style={{ margin: '0 0 12px', color: '#fff', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1.5, opacity: 0.5 }}>
+            <p style={{ margin: '0 0 12px', color: '#fff', fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1.5, opacity: 0.5 }}>
               TOP 3 GAMES
             </p>
             {(member.topGames || ['—']).map((g, i) => (
@@ -170,7 +170,7 @@ export default function MemberModal({ member, members, index, onClose, onNav }) 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, padding: '20px 32px 32px' }}>
           {/* Relationship */}
           <div>
-            <p style={{ margin: '0 0 8px', color: '#fff', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 1.5, opacity: 0.5 }}>
+            <p style={{ margin: '0 0 8px', color: '#fff', fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 1.5, opacity: 0.5 }}>
               RELATIONSHIP STATUS
             </p>
             <p style={{ margin: 0, color: 'rgba(255,255,255,0.8)', fontFamily: "'Rajdhani', sans-serif", fontSize: 14, fontStyle: 'italic' }}>
@@ -180,7 +180,7 @@ export default function MemberModal({ member, members, index, onClose, onNav }) 
 
           {/* Social */}
           <div>
-            <p style={{ margin: '0 0 8px', color: '#fff', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1.5, opacity: 0.5 }}>
+            <p style={{ margin: '0 0 8px', color: '#fff', fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1.5, opacity: 0.5 }}>
               SOCIAL
             </p>
             <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>

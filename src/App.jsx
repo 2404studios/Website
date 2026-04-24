@@ -11,6 +11,8 @@ import JoinPage from './pages/JoinPage';
 import SocialPage from './pages/SocialPage';
 import ThankYouPage from './pages/ThankYouPage';
 import StarBackground from './components/StarBackground';
+import { useSFX } from './hooks/useSFX';
+
 /**
  * App - Root component wiring together navigation, card stack, menu overlay,
  * and all 7 page sections.
@@ -33,8 +35,14 @@ import StarBackground from './components/StarBackground';
 const TOTAL_PAGES = 7;
 
 function App() {
-  const { pageIndex, navigate, isTransitioning, goToPage } = useNavigation(TOTAL_PAGES);
+  const { pageIndex, navigate, isTransitioning, goToPage: _goToPage } = useNavigation(TOTAL_PAGES);
+  const { playNav } = useSFX();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const goToPage = (idx) => {
+    if (idx !== pageIndex) playNav();
+    _goToPage(idx);
+  };
 
   const openMenu = useCallback(() => setMenuOpen(true), []);
   const closeMenu = useCallback(() => setMenuOpen(false), []);
@@ -44,13 +52,13 @@ function App() {
       <StarBackground pageIndex={pageIndex} />
       {/* Card stack fills the entire viewport */}
       <CardStack pageIndex={pageIndex}>
-        <HeroPage />
-        <OurStoryPage />
-        <ExperiencePage />
-        <AboutPage />
-        <JoinPage />
-        <SocialPage />
-        <ThankYouPage />
+        <HeroPage isActive={pageIndex === 0} />
+        <OurStoryPage isActive={pageIndex === 1} />
+        <ExperiencePage isActive={pageIndex === 2} />
+        <AboutPage isActive={pageIndex === 3} />
+        <JoinPage isActive={pageIndex === 4} />
+        <SocialPage isActive={pageIndex === 5} />
+        <ThankYouPage isActive={pageIndex === 6} />
       </CardStack>
 
       {/* Hamburger - visible on all pages */}

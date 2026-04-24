@@ -1,13 +1,7 @@
-import React from 'react';
+import { motion } from 'framer-motion';
 import ReelsContainer from '../components/ReelsContainer';
 
-/**
- * Page 2 - "Lots Of Experience"
- * Layout from design: heading in upper third, edge-to-edge video reel in middle,
- * "... More to Experience" italic bold text below the reel.
- * Background matches site bg color.
- */
-export default function ExperiencePage() {
+export default function ExperiencePage({ isActive }) {
   // Sample testing array with actual .mp4 links - used only one mp4 link in the public folder
 const videoList = [
   { 
@@ -49,7 +43,12 @@ const videoList = [
       />
 
       {/* Content */}
-      <div className="relative flex flex-col h-full w-full">
+      <motion.div 
+        className="relative flex flex-col h-full w-full"
+        initial={{ opacity: 0, scale: 0.8, y: 40 }}
+        animate={isActive ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 40 }}
+        transition={{ duration: 1, ease: [0.34, 1.56, 0.64, 1] }}
+      >
         {/* Heading */}
         <div className="flex items-end justify-center pt-12 pb-6 md:pt-16 md:pb-8 px-4">
           <h2 className="text-white text-base md:text-2xl font-medium tracking-wide m-0">
@@ -68,7 +67,7 @@ const videoList = [
             ... More to Experience
           </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

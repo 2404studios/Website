@@ -88,7 +88,7 @@ const MenuOverlay = React.memo(function MenuOverlay({ isOpen, onClose, goToPage 
                 <button
                   onClick={() => handleNavClick(link.pageIndex)}
                   className="min-h-[44px] text-white/70 hover:text-white transition-colors duration-300 cursor-pointer text-3xl md:text-5xl font-bold bg-transparent border-none text-left w-full p-1"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
+                  style={{ fontFamily: "'Archivo', sans-serif" }}
                 >
                   {link.label}
                 </button>
