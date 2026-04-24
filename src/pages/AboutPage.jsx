@@ -100,7 +100,7 @@ const TEAM_MEMBERS = [
     img: '/team/faruq.jpg',
     quote: 'A great level teaches without a single word.',
     skills: ['Unreal Engine', 'Blender', 'Fashion Design'],
-    topGames: ['Fortnite', 'Portal 2', 'FIFA'],
+    topGames: ['Fortnite', 'Mortal Kombat', 'FIFA'],
     relationshipStatus: 'Focused On The Game', instagram: 'https://instagram.com/aceblorgames', twitter: '',
   },
   {
