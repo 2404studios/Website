@@ -10,6 +10,7 @@ import AboutPage from './pages/AboutPage';
 import JoinPage from './pages/JoinPage';
 import SocialPage from './pages/SocialPage';
 import ThankYouPage from './pages/ThankYouPage';
+import StarBackground from './components/StarBackground';
 /**
  * App - Root component wiring together navigation, card stack, menu overlay,
  * and all 7 page sections.
@@ -40,6 +41,7 @@ function App() {
 
   return (
     <div className="w-full h-full bg-[#00002b]">
+      <StarBackground pageIndex={pageIndex} />
       {/* Card stack fills the entire viewport */}
       <CardStack pageIndex={pageIndex}>
         <HeroPage />
