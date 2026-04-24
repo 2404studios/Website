@@ -42,11 +42,11 @@ const TEAM_MEMBERS = [
     twitter: 'https://x.com/wonuchekwas',
   },
   {
-    id: 4, name: 'Dan Odin', role: 'Captain of the ship', role2: 'Director/ Game Designer/ Programmer',
+    id: 4, name: 'DAN ODIN', role: 'Captain Of The Ship', role2: 'Director/ Game Designer/ Programmer',
     img: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Zuri',
     quote: "To Lead is to Serve. The only way Up is Down. To To Live is To Die. To Be God is To Be Human.",
     skills: ['LOVE2D, Godot Engine, Unreal Engine', 'Communication', 'Magic & Wizardry'],
-    topGames: ['Dungeon of Dreadlock', 'Sky: Children of the Light', 'Albion Online'],
+    topGames: ['Dungeon of Dreadrock', 'Sky: Children of the Light', 'Albion Online'],
     relationshipStatus: 'Who set this question?', instagram: 'https://www.instagram.com/danodin69', twitter: 'https://x.com/danodin69',
   },
 
@@ -96,12 +96,12 @@ const TEAM_MEMBERS = [
     instagram: 'https://www.instagram.com/botf_x?igsh=NWE4a3Rzb3Q0c2Qx',
   },
   {
-    id: 8, name: 'BOLU', role: 'Level Designer',
-    img: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bolu',
+    id: 8, name: 'FARUQ OYETADE', role: 'TECHNICAL ARTIST',
+    img: '/team/faruq.jpg',
     quote: 'A great level teaches without a single word.',
-    skills: ['Unreal Engine', 'Unity', 'Whitebox Design'],
-    topGames: ['Super Mario Odyssey', 'Portal 2', 'Doom Eternal'],
-    relationshipStatus: 'Focused On The Game', instagram: '', twitter: 'https://x.com/zekiah_711',
+    skills: ['Unreal Engine', 'Blender', 'Fashion Design'],
+    topGames: ['Fortnite', 'Portal 2', 'FIFA'],
+    relationshipStatus: 'Focused On The Game', instagram: 'https://instagram.com/aceblorgames', twitter: '',
   },
   {
     id: 9, name: 'ZEK', role: 'Web Engineer',
