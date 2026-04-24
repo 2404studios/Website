@@ -18,7 +18,7 @@ export default function SocialPage({ isActive }) {
         transition={{ duration: 1, ease: [0.34, 1.56, 0.64, 1] }}
       >
         <h2 className="text-white text-3xl md:text-5xl font-bold m-0 mb-6 md:mb-17">
-          Don't Miss Out
+          DON'T MISS OUT
         </h2>
 
         <p className="text-white italic md:text-base mb-10 md:mb-14 font-bold">

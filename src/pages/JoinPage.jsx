@@ -10,7 +10,7 @@ export default function JoinPage({ isActive }) {
 
   // 🔥 Wake up server on load (Render sleep fix)
   useEffect(() => {
-    fetch("https://waitlist-v0.onrender.com/healthz").catch(() => {});
+    fetch("https://waitlist-v0.onrender.com/healthz").catch(() => { });
   }, []);
 
   const fireConfetti = () => {
@@ -22,60 +22,60 @@ export default function JoinPage({ isActive }) {
   };
 
   // ✅ NEW submit handler
- const handleSubmit = useCallback(
-  async (e) => {
-    e.preventDefault();
-    setStatus("loading");
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setStatus("loading");
 
-    try {
-      const res = await fetch(
-        "https://waitlist-v0.onrender.com/waitlist",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            email,
-          }),
+      try {
+        const res = await fetch(
+          "https://waitlist-v0.onrender.com/waitlist",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name,
+              email,
+            }),
+          }
+        );
+
+        const data = await res.json();
+
+        // 🔴 Handle duplicate email (409)
+        if (res.status === 409) {
+          setStatus("idle");
+          toast.error("You’re already on the waitlist 👀");
+          return;
         }
-      );
 
-      const data = await res.json();
+        // 🔴 Other errors
+        if (!res.ok) {
+          throw new Error(data?.message || "Failed to join waitlist");
+        }
 
-      // 🔴 Handle duplicate email (409)
-      if (res.status === 409) {
-        setStatus("idle");
-        toast.error("You’re already on the waitlist 👀");
-        return;
+        // ✅ success
+        setStatus("success");
+        setName("");
+        setEmail("");
+
+        fireConfetti();
+
+        toast.success("You’re in 🚀", {
+          description: "Welcome to 2404 Originals",
+        });
+
+      } catch (err) {
+        console.error(err);
+        setStatus("error");
+
+        toast.error("Something went wrong. Try again.");
       }
-
-      // 🔴 Other errors
-      if (!res.ok) {
-        throw new Error(data?.message || "Failed to join waitlist");
-      }
-
-      // ✅ success
-      setStatus("success");
-      setName("");
-      setEmail("");
-
-      fireConfetti();
-
-      toast.success("You’re in 🚀", {
-        description: "Welcome to 2404 Originals",
-      });
-
-    } catch (err) {
-      console.error(err);
-      setStatus("error");
-
-      toast.error("Something went wrong. Try again.");
-    }
-  },
-  [name, email]
-);
+    },
+    [name, email]
+  );
 
 
   return (
@@ -184,7 +184,7 @@ export default function JoinPage({ isActive }) {
         </form>
 
         <p className="text-xs text-white/40 mt-6">
-          Terms & Conditions Apply
+          No Spam! We’ll only send you updates about 2404 Journey and the occasional memes.
         </p>
       </motion.div>
     </div>
