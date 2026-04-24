@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 /**
  * MemberModal
@@ -10,11 +10,22 @@ import React from 'react';
  *   index    – current index in `members`
  */
 export default function MemberModal({ member, members, index, onClose, onNav }) {
-  if (!member) return null;
-
   const total = members.length;
   const goPrev = () => onNav((index - 1 + total) % total);
   const goNext = () => onNav((index + 1) % total);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowLeft') goPrev();
+      if (e.key === 'ArrowRight') goNext();
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [index, onClose]);
+
+  if (!member) return null;
 
   return (
     <div
@@ -49,124 +60,133 @@ export default function MemberModal({ member, members, index, onClose, onNav }) 
         onClick={e => e.stopPropagation()}
         style={{
           position: 'relative',
-          width: 340,
+          width: 480,
           maxWidth: '92vw',
           backgroundImage: "url('/backgroundck.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          border: '1.5px solid rgba(180,120,255,0.28)',
-          borderRadius: 16,
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          borderRadius: 24,
           overflow: 'hidden',
-          boxShadow: '0 0 80px rgba(100,40,220,0.3)',
-          animation: 'mSlideUp .3s cubic-bezier(.4,0,.2,1)',
+          boxShadow: '0 30px 60px rgba(0, 0, 0, 0.6)',
+          animation: 'mSlideUp .4s cubic-bezier(.16, 1, .3, 1)',
         }}
       >
+        {/* Overlay for depth */}
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.35)', pointerEvents: 'none' }} />
 
-
-        {/* Close */}
+        {/* Close Button */}
         <button
-          onClick={onClose} className='bg-white/2 border border-white/10 rounded-2xl text-white hover:bg-white/10 hover:scale-110 hover:shadow-lg transition duration-300'
+          onClick={onClose}
           style={{
-            position: 'absolute', top: 10, right: 14,
-            background: 'none', border: 'none',
-            color: 'rgba(255,255,255,0.5)', fontSize: 22,
-            cursor: 'pointer', lineHeight: 1, zIndex: 10,
+            position: 'absolute', top: 16, right: 16,
+            width: 32, height: 32,
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '50%',
+            color: '#fff', fontSize: 18,
+            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            zIndex: 10, transition: 'all 0.2s ease'
           }}
+          onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+          onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
         >×</button>
 
         {/* ── Header row ── */}
-        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 14, padding: '18px 20px 0', position: 'relative' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20, padding: '32px 32px 0', position: 'relative' }}>
           {/* Portrait */}
           <div style={{
-            width: 80, height: 80, flexShrink: 0,
-            border: '2px solid rgba(255,255,255,0.5)',
-            borderRadius: 6, overflow: 'hidden',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+            width: 100, height: 100, flexShrink: 0,
+            border: '2px solid rgba(255,255,255,0.8)',
+            borderRadius: 12, overflow: 'hidden',
+            boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
           }}>
             <img src={member.img} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
 
           {/* Name + role */}
-          <div style={{ paddingBottom: 4 }}>
+          <div>
             <h2 style={{
               margin: 0, color: '#fff',
               fontFamily: "'Bebas Neue', sans-serif",
-              fontSize: 15, fontWeight: 700, letterSpacing: 2,
+              fontSize: 28, fontWeight: 700, letterSpacing: 3,
+              textTransform: 'uppercase',
             }}>{member.name}</h2>
             <p style={{
-              margin: 0, color: 'rgba(255, 255, 255, 0.87)',
-              fontSize: 12, fontFamily: "'Rajdhani', sans-serif",
-            }}>{member.role}{member.role2 ? `, ${member.role2}` : ''}</p>
+              margin: '4px 0 0', color: 'rgba(255, 255, 255, 0.7)',
+              fontSize: 14, fontFamily: "'Rajdhani', sans-serif",
+              fontWeight: 500, letterSpacing: 1,
+            }}>{member.role}{member.role2 ? ` / ${member.role2}` : ''}</p>
           </div>
         </div>
 
         {/* ── Quote ── */}
-        <div style={{ padding: '14px 20px 10px' }}>
-          <span> <img src="/qoute.svg"  className='h-2' alt="" /> </span>
+        <div style={{ padding: '24px 32px 16px', position: 'relative' }}>
+          <img src="/qoute.svg" style={{ height: 12, marginBottom: 8, opacity: 0.6 }} alt="" />
           <p style={{
-            margin: '2px 0 0', color: '#fff',
-            fontSize: 13, lineHeight: 1.6,
+            margin: 0, color: '#fff',
+            fontSize: 15, lineHeight: 1.6,
             fontFamily: "'Inter', sans-serif",
             fontStyle: 'italic',
+            opacity: 0.9,
           }}>
             {member.quote || 'Passionate about creating worlds that matter.'}
           </p>
         </div>
 
-        <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', margin: '0 20px' }} />
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', margin: '0 32px' }} />
 
         {/* ── Skills + Top 3 Games ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, padding: '14px 20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, padding: '20px 32px' }}>
           {/* Skills */}
           <div>
-            <p style={{ margin: '0 0 8px', color: '#fff', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1 }}>
+            <p style={{ margin: '0 0 12px', color: '#fff', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1.5, opacity: 0.5 }}>
               SKILLS
             </p>
             {(member.skills || ['—']).map((s, i) => (
-              <p key={i} style={{ margin: '0 0 4px', color: 'rgba(255,255,255,0.7)', fontFamily: "'Rajdhani', sans-serif", fontSize: 12, fontStyle: 'italic' }}>
-                - {s}
+              <p key={i} style={{ margin: '0 0 6px', color: 'rgba(255,255,255,0.85)', fontFamily: "'Rajdhani', sans-serif", fontSize: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 10 }}>☉</span> {s}
               </p>
             ))}
           </div>
 
           {/* Top 3 Games */}
           <div>
-            <p style={{ margin: '0 0 8px', color: '#fff', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1 }}>
+            <p style={{ margin: '0 0 12px', color: '#fff', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1.5, opacity: 0.5 }}>
               TOP 3 GAMES
             </p>
             {(member.topGames || ['—']).map((g, i) => (
-              <p key={i} style={{ margin: '0 0 4px', color: 'rgba(255,255,255,0.7)', fontFamily: "'Rajdhani', sans-serif", fontSize: 12, fontStyle: 'italic' }}>
-                - {g}
+              <p key={i} style={{ margin: '0 0 6px', color: 'rgba(255,255,255,0.85)', fontFamily: "'Rajdhani', sans-serif", fontSize: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 10 }}>☉</span> {g}
               </p>
             ))}
           </div>
         </div>
 
-        <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', margin: '0 20px' }} />
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', margin: '0 32px' }} />
 
         {/* ── Relationship Status + Social ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, padding: '14px 20px 18px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, padding: '20px 32px 32px' }}>
           {/* Relationship */}
           <div>
-            <p style={{ margin: '0 0 6px', color: '#fff', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 1 }}>
+            <p style={{ margin: '0 0 8px', color: '#fff', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: 1.5, opacity: 0.5 }}>
               RELATIONSHIP STATUS
             </p>
-            <p style={{ margin: 0, color: 'rgba(255,255,255,0.65)', fontFamily: "'Rajdhani', sans-serif", fontSize: 12, fontStyle: 'italic' }}>
+            <p style={{ margin: 0, color: 'rgba(255,255,255,0.8)', fontFamily: "'Rajdhani', sans-serif", fontSize: 14, fontStyle: 'italic' }}>
               {member.relationshipStatus || 'Focused On The Game'}
             </p>
           </div>
 
           {/* Social */}
           <div>
-            <p style={{ margin: '0 0 8px', color: '#fff', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1 }}>
+            <p style={{ margin: '0 0 8px', color: '#fff', fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1.5, opacity: 0.5 }}>
               SOCIAL
             </p>
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
               {member.instagram && (
                 <a href={member.instagram} target="_blank" rel="noreferrer" className="modal-social-btn">
-                  {/* Instagram icon */}
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
                     <circle cx="12" cy="12" r="4"/>
                     <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
@@ -175,15 +195,13 @@ export default function MemberModal({ member, members, index, onClose, onNav }) 
               )}
               {member.twitter && (
                 <a href={member.twitter} target="_blank" rel="noreferrer" className="modal-social-btn">
-                  {/* X / Twitter icon */}
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                   </svg>
                 </a>
               )}
-              {/* Fallback if no socials set */}
               {!member.instagram && !member.twitter && (
-                <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 12, fontFamily: "'Rajdhani', sans-serif" }}>—</span>
+                <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 14, fontFamily: "'Rajdhani', sans-serif" }}>—</span>
               )}
             </div>
           </div>
@@ -191,36 +209,25 @@ export default function MemberModal({ member, members, index, onClose, onNav }) 
 
         {/* ── Nav footer ── */}
         <div style={{
-          borderTop: '1px solid rgba(255,255,255,0.08)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          gap: 20, padding: '12px 20px',
+          background: 'rgba(255,255,255,0.03)',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '16px 32px',
         }}>
           <button className="modal-nav-btn" onClick={goPrev}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M15 18l-6-6 6-6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
           <span style={{
-            color: 'rgba(255,255,255,0.5)',
+            color: 'rgba(255,255,255,0.6)',
             fontFamily: "'Rajdhani', sans-serif",
-            fontSize: 13, letterSpacing: 1,
+            fontSize: 14, fontWeight: 600, letterSpacing: 2,
           }}>{index + 1} / {total}</span>
           <button className="modal-nav-btn" onClick={goNext}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M9 6l6 6-6 6"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </button>
         </div>
       </div>
