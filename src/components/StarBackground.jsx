@@ -12,8 +12,21 @@ const StarBackground = ({ pageIndex }) => {
   const starsRef = useRef([]);
   const shootingStarsRef = useRef([]);
   const fireworksRef = useRef([]);
-  const isAboutPage = pageIndex === 3;
+  const opacityRef = useRef(1);
   const { playFirework } = useSFX();
+
+  // Track dynamic opacity based on page type to pause animation when hidden
+  useEffect(() => {
+    let opacity = 1;
+    if (pageIndex === 1) opacity = 0.3; // Our Story (Text heavy)
+    if (pageIndex === 2) opacity = 0.2; // Experience (Video)
+    if (pageIndex === 3) opacity = 0;   // About (Hidden)
+    if (pageIndex === 4) opacity = 0.3; // Join (Form/Text)
+    if (pageIndex === 5) opacity = 0.6; // Social
+    if (pageIndex === 6) opacity = 1;   // Thank You
+    if (pageIndex === 0) opacity = 1;   // Hero
+    opacityRef.current = opacity;
+  }, [pageIndex]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -71,12 +84,20 @@ const StarBackground = ({ pageIndex }) => {
       }
       draw() {
         ctx.save();
-        const color = `hsla(${this.hue}, ${this.saturation}%, ${this.lightness}%, ${Math.max(0, this.opacity)})`;
-        ctx.fillStyle = color;
-        ctx.shadowBlur = this.currentGlow;
-        ctx.shadowColor = `hsl(${this.hue}, 80%, 70%)`;
+        ctx.globalAlpha = Math.max(0, this.opacity);
+        
+        // High-performance glow (layered circle instead of shadowBlur)
+        if (this.currentGlow > 0) {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size + this.currentGlow * 0.3, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(${this.hue}, 80%, 70%, 0.15)`;
+          ctx.fill();
+        }
+
+        // Core star
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `hsl(${this.hue}, ${this.saturation}%, ${this.lightness}%)`;
         ctx.fill();
         ctx.restore();
       }
@@ -106,15 +127,25 @@ const StarBackground = ({ pageIndex }) => {
       draw() {
         if (!this.active) return;
         ctx.save();
-        ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
-        ctx.lineWidth = 3;
+        ctx.globalAlpha = Math.max(0, this.opacity);
+        
+        // High-performance glow
+        ctx.strokeStyle = `rgba(255, 255, 255, 0.2)`;
+        ctx.lineWidth = 8;
         ctx.lineCap = 'round';
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = 'white';
         ctx.beginPath();
         ctx.moveTo(this.x, this.y);
         ctx.lineTo(this.x - (this.len * (this.speed / Math.abs(this.speed))), this.y - (Math.abs(this.len) * 0.4));
         ctx.stroke();
+
+        // Core line
+        ctx.strokeStyle = `rgba(255, 255, 255, 1)`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(this.x - (this.len * (this.speed / Math.abs(this.speed))), this.y - (Math.abs(this.len) * 0.4));
+        ctx.stroke();
+        
         ctx.restore();
       }
     }
@@ -145,13 +176,20 @@ const StarBackground = ({ pageIndex }) => {
       draw() {
         if (!this.active) return;
         ctx.save();
-        ctx.globalAlpha = this.opacity;
-        ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`;
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = `hsl(${this.hue}, 100%, 50%)`;
+        ctx.globalAlpha = Math.max(0, this.opacity);
+        
+        // High-performance glow
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${this.hue}, 100%, 50%, 0.3)`;
+        ctx.fill();
+
+        // Core particle
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`;
         ctx.fill();
+        
         ctx.restore();
       }
     }
@@ -170,6 +208,11 @@ const StarBackground = ({ pageIndex }) => {
     };
 
     const animate = () => {
+      animationFrameId = requestAnimationFrame(animate);
+
+      // ONLY calculate and render if the canvas is actually visible!
+      if (opacityRef.current <= 0) return;
+
       ctx.clearRect(0, 0, width, height);
 
       starsRef.current.forEach(s => { s.update(); s.draw(); });
@@ -182,19 +225,11 @@ const StarBackground = ({ pageIndex }) => {
 
       fireworksRef.current = fireworksRef.current.filter(f => f.active);
       fireworksRef.current.forEach(f => { f.update(); f.draw(); });
-
-      animationFrameId = requestAnimationFrame(animate);
     };
 
     window.addEventListener('resize', init);
     init();
     animate();
-
-    const handleInteraction = (e) => {
-      // Access current pageIndex via closure or ref? 
-      // Actually, since we want to avoid re-binding, let's use a ref for pageIndex too or just bind.
-      // But for now, we'll just bind.
-    };
 
     return () => {
       window.removeEventListener('resize', init);
@@ -202,21 +237,9 @@ const StarBackground = ({ pageIndex }) => {
     };
   }, []);
 
-  // Calculate dynamic opacity based on page type
-  let canvasOpacity = 1;
-  if (pageIndex === 1) canvasOpacity = 0.3; // Our Story (Text heavy)
-  if (pageIndex === 2) canvasOpacity = 0.2; // Experience (Video)
-  if (pageIndex === 3) canvasOpacity = 0;   // About (Hidden)
-  if (pageIndex === 4) canvasOpacity = 0.3; // Join (Form/Text)
-  if (pageIndex === 5) canvasOpacity = 0.6; // Social
-  if (pageIndex === 6) canvasOpacity = 1;   // Thank You
-  if (pageIndex === 0) canvasOpacity = 1;   // Hero
-
   // Separate effect for interaction to avoid re-initializing the animation loop
   useEffect(() => {
     const handleInteraction = (e) => {
-      // Use a Ref for the pageIndex to ensure we always have the fresh value 
-      // without needing to re-bind this listener constantly.
       if (pageIndex !== 0) return;
 
       const x = e.clientX || (e.touches && e.touches[0].clientX);
@@ -230,14 +253,13 @@ const StarBackground = ({ pageIndex }) => {
       }
     };
 
-    // Use capture: true to ensure we catch the event before other components consume it
     window.addEventListener('mousedown', handleInteraction, { capture: true });
     window.addEventListener('touchstart', handleInteraction, { capture: true });
     return () => {
       window.removeEventListener('mousedown', handleInteraction, { capture: true });
       window.removeEventListener('touchstart', handleInteraction, { capture: true });
     };
-  }, [pageIndex]);
+  }, [pageIndex, playFirework]);
 
   return (
     <canvas
@@ -245,7 +267,11 @@ const StarBackground = ({ pageIndex }) => {
       className="fixed inset-0 pointer-events-none z-10 transition-opacity duration-1000"
       style={{ 
         background: 'transparent',
-        opacity: canvasOpacity
+        opacity: pageIndex === 1 ? 0.3 :
+                 pageIndex === 2 ? 0.2 :
+                 pageIndex === 3 ? 0 :
+                 pageIndex === 4 ? 0.3 :
+                 pageIndex === 5 ? 0.6 : 1
       }}
     />
   );

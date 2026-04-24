@@ -1,10 +1,8 @@
 import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 
-const ReelsContainer = React.memo(function ReelsContainer({ videos = [] }) {
+const ReelsContainer = React.memo(function ReelsContainer({ videos = [], isActive = false }) {
   const containerRef = useRef(null);
   const videoRefs = useRef([]);
-  const animationRef = useRef(null);
-  const isPausedRef = useRef(false);
 
   // 🔥 Duplicate items for seamless looping
   const items = useMemo(() => {
@@ -20,13 +18,13 @@ const ReelsContainer = React.memo(function ReelsContainer({ videos = [] }) {
     return [...base, ...base]; // duplicate
   }, [videos]);
 
-  // 🎥 Intersection Observer (unchanged)
+  // 🎥 Intersection Observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           const video = entry.target;
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && isActive) {
             if (video.dataset.src && !video.src) {
               video.src = video.dataset.src;
             }
@@ -48,55 +46,7 @@ const ReelsContainer = React.memo(function ReelsContainer({ videos = [] }) {
     });
 
     return () => observer.disconnect();
-  }, [items]);
-
-  // 🔥 SEAMLESS AUTO SCROLL
- useEffect(() => {
-  const container = containerRef.current;
-  if (!container) return;
-
-  const speed = 0.8;
-
-  let itemWidth = 0;
-  let loopWidth = 0;
-
-  const calculateSizes = () => {
-    const firstItem = container.children[0];
-    if (!firstItem) return;
-
-    itemWidth = firstItem.getBoundingClientRect().width;
-    const originalCount = items.length / 2;
-    loopWidth = itemWidth * originalCount;
-
-    // 🔥 START IN THE MIDDLE (CRUCIAL FIX)
-    container.scrollLeft = loopWidth;
-  };
-
-  calculateSizes();
-  window.addEventListener('resize', calculateSizes);
-
-  const scrollStep = () => {
-    if (!container) return;
-
-    if (!isPausedRef.current) {
-      container.scrollLeft += speed;
-    }
-
-    // 🔥 RESET EARLY (before edge shows)
-    if (container.scrollLeft >= loopWidth * 2 - container.clientWidth) {
-      container.scrollLeft = loopWidth;
-    }
-
-    animationRef.current = requestAnimationFrame(scrollStep);
-  };
-
-  animationRef.current = requestAnimationFrame(scrollStep);
-
-  return () => {
-    cancelAnimationFrame(animationRef.current);
-    window.removeEventListener('resize', calculateSizes);
-  };
-}, [items]);
+  }, [items, isActive]);
 
   const setVideoRef = useCallback((el, index) => {
     videoRefs.current[index] = el;
@@ -105,46 +55,42 @@ const ReelsContainer = React.memo(function ReelsContainer({ videos = [] }) {
   return (
     <div
       ref={containerRef}
-      className="hide-scrollbar flex overflow-x-auto w-full"
-      style={{
-        touchAction: 'pan-x',
-        WebkitOverflowScrolling: 'touch',
-      }}
-      onMouseEnter={() => (isPausedRef.current = true)}
-      onMouseLeave={() => (isPausedRef.current = false)}
+      className="w-full overflow-hidden"
     >
-      {items.map((item, i) => (
-        <div
-          key={i}
-          className="shrink-0 w-[60vw] md:w-[25vw] relative"
-          style={{ aspectRatio: '4/3' }}
-        >
-          {item.placeholder ? (
-            <div
-              className="w-full h-full"
-              style={{
-                backgroundColor: '#5a0000',
-                borderRight:
-                  i < items.length - 1
-                    ? '1px solid rgba(42, 20, 121, 0.1)'
-                    : 'none',
-              }}
-            />
-          ) : (
-            <video
-              ref={(el) => setVideoRef(el, i)}
-              data-src={item.src}
-              poster={item.poster}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-              preload="none"
-            />
-          )}
-        </div>
-      ))}
+      <div className={`flex w-max animate-marquee ${!isActive ? 'paused' : ''}`}>
+        {items.map((item, i) => (
+          <div
+            key={i}
+            className="shrink-0 w-[60vw] md:w-[25vw] relative"
+            style={{ aspectRatio: '4/3' }}
+          >
+            {item.placeholder ? (
+              <div
+                className="w-full h-full"
+                style={{
+                  backgroundColor: '#5a0000',
+                  borderRight:
+                    i < items.length - 1
+                      ? '1px solid rgba(42, 20, 121, 0.1)'
+                      : 'none',
+                }}
+              />
+            ) : (
+              <video
+                ref={(el) => setVideoRef(el, i)}
+                data-src={item.src}
+                poster={item.poster}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+                preload="none"
+              />
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 });

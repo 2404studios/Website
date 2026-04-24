@@ -70,7 +70,7 @@ const videoList = [
 
         {/* Reel */}
         <div className="w-full">
-          <ReelsContainer videos={videoList} />
+          <ReelsContainer videos={videoList} isActive={isActive} />
         </div>
 
         {/* Bottom text */}

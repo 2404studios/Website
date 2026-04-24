@@ -75,3 +75,19 @@ html, body {
 .menu-transition {
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
+
+/* Marquee Animation */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 60s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee:hover,
+.animate-marquee.paused {
+  animation-play-state: paused;
+}
