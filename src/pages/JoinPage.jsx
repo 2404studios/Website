@@ -84,7 +84,7 @@ export default function JoinPage({ isActive }) {
       />
 
       {/* MAIN CONTENT */}
-      <motion.div 
+      <motion.div
         className="relative w-full max-w-4xl text-center text-white mx-auto pb-10"
         initial={{ opacity: 0, scale: 0.8, y: 40 }}
         animate={isActive ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 40 }}
@@ -104,19 +104,19 @@ export default function JoinPage({ isActive }) {
 
           {/* FEATURES */}
           <div className="flex flex-col md:flex-row gap-3 mt-2 mb-0 justify-center">
-            <div className="border border-white/20 bg-white/5 px-4 py-3 text-xs font-bold rounded-md flex items-center gap-2">
-              <img src="/movie_clipper.svg" className="w-10 h-8" />
-              Exclusive BTS(not the music band) content.
+            <div className="border border-white/20 bg-white/5 px-4 py-3 text-sm font-bold rounded-md flex items-center gap-4">
+              <img src="/movie_clipper.svg" className="w-10 h-8 flex-shrink-0" />
+              <span className="text-left">Exclusive BTS(not the music band) content.</span>
             </div>
 
-            <div className="border border-white/20 bg-white/5 px-4 py-3 text-xs font-bold rounded-md flex items-center gap-1">
-              <img src="/logo.svg" className="w-10 h-8" />
-              2404 Network account with early bonuses Unlocked.
+            <div className="border border-white/20 bg-white/5 px-4 py-3 text-sm font-bold rounded-md flex items-center gap-4">
+              <img src="/logo.svg" className="w-10 h-8 flex-shrink-0" />
+              <span className="text-left">2404 Network account with early bonuses Unlocked.</span>
             </div>
 
-            <div className="border border-white/20 bg-white/5 px-4 py-3 text-xs font-bold rounded-md flex items-center gap-2">
-              <img src="/crown.svg" className="w-10 h-8" />
-              The Original badge. Permanent.
+            <div className="border border-white/20 bg-white/5 px-4 py-3 text-sm font-bold rounded-md flex items-center gap-4">
+              <img src="/crown.svg" className="w-10 h-8 flex-shrink-0" />
+              <span className="text-left">The Original badge. Permanent.</span>
             </div>
           </div>
         </div>

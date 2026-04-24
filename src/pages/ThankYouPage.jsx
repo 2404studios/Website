@@ -1,12 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
 /**
  * Page 6 - Thank You: Arced "THANK YOU" text rotating around a sun symbol.
- * This implementation uses SVG <textPath> for the arced text and Framer Motion for the rotation.
+ * The central sun circle is a secret reset trigger — tap it 8 times to reset the tutorial.
  */
-export default function ThankYouPage() {
+export default function ThankYouPage({ onReset }) {
   const text = "THANK YOU ☉ THANK YOU ☉ THANK YOU ☉ ";
+  const [tapCount, setTapCount] = useState(0);
+
+  const handleSunTap = () => {
+    const next = tapCount + 1;
+    setTapCount(next);
+
+    if (next >= 8) {
+      // BOOM — trigger reset
+      if (onReset) onReset();
+    }
+  };
   
   return (
     <div className="relative flex items-center justify-center h-full w-full bg-[#00002b] overflow-hidden">
@@ -40,14 +51,35 @@ export default function ThankYouPage() {
           </svg>
         </motion.div>
 
-        {/* Central Sun Symbol */}
-        <div className="relative flex items-center justify-center">
+        {/* Central Sun Symbol — Secret Reset Trigger */}
+        <motion.div 
+          className="relative flex items-center justify-center cursor-pointer"
+          onClick={handleSunTap}
+          animate={{
+            scale: 1 + tapCount * 0.08,
+          }}
+          whileTap={{ scale: 1 + tapCount * 0.08 + 0.15 }}
+          transition={{ type: "spring", stiffness: 300, damping: 15 }}
+        >
           {/* Outer Ring */}
-          <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border-4 md:border-8 border-white opacity-90 shadow-[0_0_30px_rgba(255,255,255,0.2)]" />
+          <motion.div 
+            className="w-24 h-24 md:w-40 md:h-40 rounded-full border-4 md:border-8 border-white shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+            animate={{
+              opacity: 0.9 + tapCount * 0.01,
+              boxShadow: tapCount > 0
+                ? `0 0 ${20 + tapCount * 10}px rgba(255,255,255,${0.2 + tapCount * 0.1})`
+                : "0 0 30px rgba(255,255,255,0.2)"
+            }}
+          />
           
           {/* Inner Circle */}
-          <div className="absolute w-12 h-12 md:w-20 md:h-20 rounded-full bg-white shadow-[0_0_20px_rgba(255,255,255,0.4)]" />
-        </div>
+          <motion.div 
+            className="absolute w-12 h-12 md:w-20 md:h-20 rounded-full bg-white"
+            animate={{
+              boxShadow: `0 0 ${20 + tapCount * 8}px rgba(255,255,255,${0.4 + tapCount * 0.08})`
+            }}
+          />
+        </motion.div>
 
       </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MemberModal from '../components/MemberModal';
 
@@ -227,6 +227,7 @@ export default function AboutPage({ isActive }) {
   const [index, setIndex] = useState(0);
   const [modalIndex, setModalIndex] = useState(null);
   const { isMobile } = useWindowSize();
+  const touchStartRef = useRef(null);
 
   const total = TEAM_MEMBERS.length;
 
@@ -236,9 +237,33 @@ export default function AboutPage({ isActive }) {
 
   useAutoSlide(() => setIndex(i => (i + 1) % total), 5000);
 
+  // Horizontal swipe for carousel
+  const handleTouchStart = useCallback((e) => {
+    touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, []);
+
+  const handleTouchEnd = useCallback((e) => {
+    if (!touchStartRef.current) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartRef.current.x;
+    const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartRef.current.y);
+    const threshold = 50;
+    if (Math.abs(deltaX) > threshold && Math.abs(deltaX) > deltaY) {
+      if (deltaX < 0) {
+        setIndex(i => (i + 1) % total); // swipe left = next
+      } else {
+        setIndex(i => (i - 1 + total) % total); // swipe right = prev
+      }
+    }
+    touchStartRef.current = null;
+  }, [total]);
+
   return (
     <>
-      <div className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+      <div
+        className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
 
         {/* Background Layer */}
         <div

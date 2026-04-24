@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 /**
  * MemberModal
@@ -13,6 +13,7 @@ export default function MemberModal({ member, members, index, onClose, onNav }) 
   const total = members.length;
   const goPrev = () => onNav((index - 1 + total) % total);
   const goNext = () => onNav((index + 1) % total);
+  const touchStartRef = useRef(null);
 
   // Keyboard navigation
   useEffect(() => {
@@ -25,11 +26,31 @@ export default function MemberModal({ member, members, index, onClose, onNav }) 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [index, onClose]);
 
+  // Swipe handlers
+  const handleTouchStart = (e) => {
+    touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!touchStartRef.current) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartRef.current.x;
+    const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartRef.current.y);
+    const threshold = 50;
+    if (Math.abs(deltaX) > threshold && Math.abs(deltaX) > deltaY) {
+      if (deltaX < 0) goNext();
+      else goPrev();
+    }
+    touchStartRef.current = null;
+  };
+
   if (!member) return null;
 
   return (
     <div
       onClick={onClose}
+      data-no-swipe
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       style={{
         position: 'fixed', inset: 0, zIndex: 200,
         background: 'rgba(0,0,0,0.72)',

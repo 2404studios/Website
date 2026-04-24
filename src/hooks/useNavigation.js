@@ -10,10 +10,11 @@ import { useState, useCallback, useRef, useEffect } from 'react';
  * 4. After transitionDuration, ref clears to allow next navigation
  *
  * @param {number} totalPages - Total number of pages/cards
+ * @param {boolean} [disabled=false] - Whether navigation is locked (e.g., during tutorial)
  * @param {number} [transitionDuration=600] - Duration of card transition in ms
  * @returns {{ pageIndex: number, navigate: (dir: 'up'|'down') => void, isTransitioning: boolean, goToPage: (index: number) => void }}
  */
-export function useNavigation(totalPages, transitionDuration = 600) {
+export function useNavigation(totalPages, disabled = false, transitionDuration = 600) {
   const [pageIndex, setPageIndex] = useState(0);
   const isTransitioningRef = useRef(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -34,10 +35,9 @@ export function useNavigation(totalPages, transitionDuration = 600) {
 
   /**
    * Navigate one page up or down.
-   * Uses ref guard (not state) so the check is synchronous and race-free.
    */
   const navigate = useCallback((direction) => {
-    if (isTransitioningRef.current) return;
+    if (disabled || isTransitioningRef.current) return;
 
     setPageIndex((prev) => {
       let next = prev;
@@ -48,21 +48,22 @@ export function useNavigation(totalPages, transitionDuration = 600) {
     });
 
     lockTransition();
-  }, [totalPages, lockTransition]);
+  }, [totalPages, lockTransition, disabled]);
 
   /**
-   * Jump directly to a specific page index (used by menu links and dot nav).
+   * Jump directly to a specific page index.
    */
   const goToPage = useCallback((index) => {
-    if (isTransitioningRef.current) return;
+    if (disabled || isTransitioningRef.current) return;
     if (index < 0 || index >= totalPages) return;
 
     setPageIndex(index);
     lockTransition();
-  }, [totalPages, lockTransition]);
+  }, [totalPages, lockTransition, disabled]);
 
   // Keyboard: ArrowUp = up, ArrowDown = down
   useEffect(() => {
+    if (disabled) return;
     const handleKeyDown = (e) => {
       switch (e.key) {
         case 'ArrowDown':
@@ -77,10 +78,11 @@ export function useNavigation(totalPages, transitionDuration = 600) {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [navigate]);
+  }, [navigate, disabled]);
 
   // Touch/swipe handler
   useEffect(() => {
+    if (disabled) return;
     const SWIPE_THRESHOLD = 50;
 
     const handleTouchStart = (e) => {
@@ -114,7 +116,7 @@ export function useNavigation(totalPages, transitionDuration = 600) {
       window.removeEventListener('touchend', handleTouchEnd);
       window.removeEventListener('touchmove', handleTouchMove);
     };
-  }, [navigate]);
+  }, [navigate, disabled]);
 
   useEffect(() => {
     return () => {

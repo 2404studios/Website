@@ -83,17 +83,20 @@ export default function SocialPage({ isActive }) {
           </a>
         </div>
 
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: 60 }}
+          animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
+          transition={{ delay: 0.6, duration: 0.8, type: "spring", stiffness: 120, damping: 10 }}
           className="flex items-center gap-6 px-7 py-4 bg-white/5 border border-white/10 rounded-2xl mt-10 md:mt-29 max-w-md"
         >
           <div className="flex-shrink-0">
             <img src="/warning.svg" alt="icon" className="w-6 h-6" />
           </div>
-          <p className="text-white text-[10px] md:text-xs leading-tight text-center">
+          <p className="text-white text-xs md:text-sm leading-tight text-center font-bold">
             Get your PVC and vote for good governance <br />
             so you can afford our games
           </p>
-        </div>
+        </motion.div>
       </motion.div>
     </div>
   );

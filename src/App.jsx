@@ -11,57 +11,64 @@ import JoinPage from './pages/JoinPage';
 import SocialPage from './pages/SocialPage';
 import ThankYouPage from './pages/ThankYouPage';
 import StarBackground from './components/StarBackground';
+import TutorialOverlay from './components/TutorialOverlay';
 import { useSFX } from './hooks/useSFX';
+import { motion, AnimatePresence } from 'framer-motion';
 
-/**
- * App - Root component wiring together navigation, card stack, menu overlay,
- * and all 7 page sections.
- *
- * State flow:
- * 1. useNavigation manages pageIndex + keyboard/touch input
- * 2. CardStack renders all pages, applies transforms based on pageIndex
- * 3. MenuOverlay floats above everything (z-50), can jump to any page via goToPage
- * 4. HamburgerButton toggles menu visibility (hidden on hero page per design)
- *
- * Page mapping:
- *   0: Hero (24·04 Studios)
- *   1: Our Story (Constellation + Sub-pages)
- *   2: Experience (video reel + heading)
- *   3: About (Team Showcase)
- *   4: Join Us (signup form)
- *   5: Social (social links)
- *   6: Thank You
- */
 const TOTAL_PAGES = 7;
 
 function App() {
-  const { pageIndex, navigate, isTransitioning, goToPage: _goToPage } = useNavigation(TOTAL_PAGES);
+  const [showTutorial, setShowTutorial] = useState(() => {
+    return localStorage.getItem('2404_tutorial_complete') !== 'true';
+  });
+  
+  const { pageIndex, navigate, isTransitioning, goToPage: _goToPage } = useNavigation(TOTAL_PAGES, showTutorial);
   const { playNav } = useSFX();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
 
   const goToPage = (idx) => {
+    if (showTutorial) return;
     if (idx !== pageIndex) playNav();
     _goToPage(idx);
+  };
+
+  const triggerReset = () => {
+    setIsResetting(true);
+    localStorage.removeItem('2404_tutorial_complete');
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  };
+
+  const completeTutorial = () => {
+    localStorage.setItem('2404_tutorial_complete', 'true');
+    setShowTutorial(false);
   };
 
   const openMenu = useCallback(() => setMenuOpen(true), []);
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   return (
-    <div className="w-full h-full bg-[#00002b]">
+    <div className="w-full h-full bg-[#00002b] overflow-hidden">
+      <AnimatePresence>
+        {showTutorial && (
+          <TutorialOverlay onComplete={completeTutorial} />
+        )}
+      </AnimatePresence>
+
       <StarBackground pageIndex={pageIndex} />
-      {/* Card stack fills the entire viewport */}
+      
       <CardStack pageIndex={pageIndex}>
-        <HeroPage isActive={pageIndex === 0} />
+        <HeroPage isActive={pageIndex === 0 && !showTutorial} />
         <OurStoryPage isActive={pageIndex === 1} />
         <ExperiencePage isActive={pageIndex === 2} />
         <AboutPage isActive={pageIndex === 3} />
         <JoinPage isActive={pageIndex === 4} />
         <SocialPage isActive={pageIndex === 5} />
-        <ThankYouPage isActive={pageIndex === 6} />
+        <ThankYouPage isActive={pageIndex === 6} onReset={triggerReset} />
       </CardStack>
 
-      {/* Hamburger - visible on all pages */}
       <HamburgerButton onClick={openMenu} />
 
       {/* Page indicator dots */}
@@ -87,8 +94,18 @@ function App() {
         ))}
       </div>
 
-      {/* Menu overlay */}
       <MenuOverlay isOpen={menuOpen} onClose={closeMenu} goToPage={goToPage} />
+
+      {/* Reset Flash */}
+      <AnimatePresence>
+        {isResetting && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 bg-white z-[200]"
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
