@@ -44,7 +44,7 @@ const MenuOverlay = React.memo(function MenuOverlay({ isOpen, onClose, goToPage 
 
   const navLinks = [
     { label: 'HOME', pageIndex: 0 },
-    { label: 'SIGN UP', pageIndex: 3 },
+    { label: 'SIGN UP', pageIndex: 4 },
     { label: 'PORTFOLIO', pageIndex: 1 },
   ];
 
