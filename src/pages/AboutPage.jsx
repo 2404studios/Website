@@ -97,7 +97,7 @@ const TEAM_MEMBERS = [
   },
   {
     id: 8, name: 'FARUQ', role: 'Level Designer',
-    img: '/team/faruq.jpg',
+    img: '/team/Faruq.png',
     quote: 'A great level teaches without a single word.',
     skills: ['Unreal Engine', 'Blender', 'Environment design'],
     topGames: ['Fortinite', 'Mortal Kombat', 'FIFA'],
