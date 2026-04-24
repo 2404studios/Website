@@ -4,6 +4,7 @@ import CardStack from './components/CardStack';
 import MenuOverlay from './components/MenuOverlay';
 import HamburgerButton from './components/HamburgerButton';
 import HeroPage from './pages/HeroPage';
+import OurStoryPage from './pages/OurStoryPage';
 import ExperiencePage from './pages/ExperiencePage';
 import AboutPage from './pages/AboutPage';
 import JoinPage from './pages/JoinPage';
@@ -23,14 +24,15 @@ import LogoPage from './pages/LogoPage';
  *
  * Page mapping:
  *   0: Hero (24·04 Studios)
- *   1: Experience (video reel + heading)
- *   2: About (video reel + text)
- *   3: Join Us (signup form)
- *   4: Social (social links)
- *   5: Thank You
- *   6: Logo
+ *   1: Our Story (Constellation + Sub-pages)
+ *   2: Experience (video reel + heading)
+ *   3: About (Team Showcase)
+ *   4: Join Us (signup form)
+ *   5: Social (social links)
+ *   6: Thank You
+ *   7: Logo
  */
-const TOTAL_PAGES = 7;
+const TOTAL_PAGES = 8;
 
 function App() {
   const { pageIndex, navigate, isTransitioning, goToPage } = useNavigation(TOTAL_PAGES);
@@ -44,6 +46,7 @@ function App() {
       {/* Card stack fills the entire viewport */}
       <CardStack pageIndex={pageIndex}>
         <HeroPage />
+        <OurStoryPage />
         <ExperiencePage />
         <AboutPage />
         <JoinPage />

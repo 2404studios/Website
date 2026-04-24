@@ -1,5 +1,24 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Archivo';
+  src: url('/fonts/Archivo/Archivo-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('/fonts/press-start-2p-font/PressStart2P-vaV7.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@theme {
+  --font-archivo: "Archivo", sans-serif;
+  --font-press-start: "Press Start 2P", system-ui;
+}
+
 /* Prevent overscroll/bounce on iOS */
 html, body {
   margin: 0;
@@ -10,6 +29,7 @@ html, body {
   width: 100%;
   background: #00002b;
   -webkit-overflow-scrolling: touch;
+  font-family: var(--font-archivo);
 }
 
 #root {
@@ -26,6 +46,22 @@ html, body {
 }
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* Custom scrollbar for story content */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 100px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:active {
+  border-color: rgba(255, 255, 255, 0.8);
 }
 
 /* Card transition base */

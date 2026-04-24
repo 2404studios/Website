@@ -84,11 +84,14 @@ export function useNavigation(totalPages, transitionDuration = 600) {
     const SWIPE_THRESHOLD = 50;
 
     const handleTouchStart = (e) => {
+      if (e.target.closest('[data-no-swipe]')) return;
       touchStartY.current = e.touches[0].clientY;
       touchStartX.current = e.touches[0].clientX;
     };
 
     const handleTouchEnd = (e) => {
+      if (e.target.closest('[data-no-swipe]')) return;
+      
       const deltaY = touchStartY.current - e.changedTouches[0].clientY;
       const deltaX = Math.abs(touchStartX.current - e.changedTouches[0].clientX);
 
@@ -98,7 +101,7 @@ export function useNavigation(totalPages, transitionDuration = 600) {
     };
 
     const handleTouchMove = (e) => {
-      if (e.target.closest('[data-reels]')) return;
+      if (e.target.closest('[data-reels]') || e.target.closest('[data-no-swipe]')) return;
       e.preventDefault();
     };
 

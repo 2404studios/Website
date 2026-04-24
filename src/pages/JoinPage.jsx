@@ -59,7 +59,7 @@ export default function JoinPage() {
 
   return (
     <div
-      className="relative min-h-dvh px-4 py-10 pb-24 overflow-y-auto"
+      className="relative min-h-dvh px-4 py-10 pb-24 overflow-y-auto flex flex-col justify-center"
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
       {/* Toasts */}
@@ -92,25 +92,23 @@ export default function JoinPage() {
 
         {/* INFO */}
         <div className="border border-white/20 rounded-xl p-4 md:p-6 mb-4 md:mb-6">
-          <p className="text-sm md:text-base text-white max-w-2xl mx-auto leading-relaxed">
-            The Founders Package For the first ones here. Sign up, stay up to date
-            with our newsletters and you become a <b className="italic">2404 Original</b>, a title that
-            closes the moment we launch and never reopens.
+          <p className="text-sm md:text-base text-white font-bold max-w-2xl mx-auto leading-relaxed">
+            Welcome... Finally You are here. <br /> Wondering what we have in store for you?<br /> Keep reading:
           </p>
 
           {/* FEATURES */}
           <div className="flex flex-col md:flex-row gap-3 mt-2 mb-0 justify-center">
-            <div className="border border-white/20 px-4 py-3 text-xs rounded-md flex items-center gap-2">
+            <div className="border border-white/20 px-4 py-3 text-xs font-bold rounded-md flex items-center gap-2">
               <img src="/movie_clipper.svg" className="w-10 h-8" />
-              Your name in the credits of our first three games
+              Exclusive BTS(not the music band) content.
             </div>
 
-            <div className="border border-white/20 px-4 py-3 text-xs rounded-md flex items-center gap-1">
+            <div className="border border-white/20 px-4 py-3 text-xs font-bold rounded-md flex items-center gap-1">
               <img src="/logo.svg" className="w-10 h-8" />
-              2404 Network account with founder bonuses locked
+              2404 Network account with early bonuses Unlocked.
             </div>
 
-            <div className="border border-white/20 px-4 py-3 text-xs rounded-md flex items-center gap-2">
+            <div className="border border-white/20 px-4 py-3 text-xs font-bold rounded-md flex items-center gap-2">
               <img src="/crown.svg" className="w-10 h-8" />
               The Original badge. Permanent.
             </div>
@@ -119,8 +117,7 @@ export default function JoinPage() {
 
         {/* SUBTEXT */}
         <p className="italic text-white mb-2">
-          The world will know our games. <br />
-          Only you will have been here first
+          Sign Up To Get Started...
         </p>
 
         {/* FORM */}

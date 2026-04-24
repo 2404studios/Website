@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import MemberModal from '../components/MemberModal';
 
 
@@ -114,7 +115,7 @@ const TEXT_PAGES = [
   `Since our founding, we have shipped titles that have been played in over 40 countries. Our flagship title won three independent game awards. But awards aren't why we do this — we do it because every week we receive messages from kids in Ibadan, Nairobi, Accra, and beyond who for the first time saw a hero who looked like them. We are currently in pre-production on two new titles slated for release next year.`,
 ];
 
-/* ───────────── HOOK ───────────── */
+/* ───────────── HOOKS ───────────── */
 function useAutoSlide(callback, delay = 4000) {
   const cbRef = useRef();
   useEffect(() => { cbRef.current = callback; });
@@ -124,123 +125,163 @@ function useAutoSlide(callback, delay = 4000) {
   }, [delay]);
 }
 
+function useWindowSize() {
+  const [size, setSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1200,
+    isMobile: typeof window !== 'undefined' ? window.innerWidth < 768 : false
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSize({
+        width: window.innerWidth,
+        isMobile: window.innerWidth < 768
+      });
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return size;
+}
+
 /* ───────────── CARD ───────────── */
-function MemberCard({ member, position, onClick }) {
+function MemberCard({ member, position, onClick, isMobile }) {
   const isCenter = position === 'center';
-  const transformMap = {
-    left: 'rotate(-8deg) translateX(12px) scale(0.9)',
-    right: 'rotate(8deg) translateX(-12px) scale(0.9)',
-    center: 'scale(1.05)',
+
+  // Responsive sizing and spacing
+  const cardWidth = isMobile ? 180 : 280;
+  const cardHeight = isMobile ? 240 : 380;
+  const xOffset = isMobile ? 210 : 420;
+
+  const variants = {
+    left: {
+      rotate: -12,
+      x: -xOffset,
+      scale: 0.8,
+      opacity: 0.3,
+      zIndex: 10,
+      filter: 'brightness(0.3) blur(2px)'
+    },
+    center: {
+      rotate: 0,
+      x: 0,
+      scale: 1.1,
+      opacity: 1,
+      zIndex: 20,
+      filter: 'brightness(1) blur(0px)'
+    },
+    right: {
+      rotate: 12,
+      x: xOffset,
+      scale: 0.8,
+      opacity: 0.3,
+      zIndex: 10,
+      filter: 'brightness(0.3) blur(2px)'
+    }
   };
 
   return (
-    <div
-      onClick={onClick}
-      className="cursor-pointer transition-all duration-500 select-none"
-      style={{
-        transform: transformMap[position],
-        filter: isCenter ? 'none' : 'brightness(0.6)',
-        zIndex: isCenter ? 10 : 5,
+    <motion.div
+      layout
+      initial={variants[position]}
+      animate={variants[position]}
+      transition={{
+        type: "spring",
+        stiffness: 80,
+        damping: 20,
+        mass: 1
       }}
+      onClick={onClick}
+      className="absolute cursor-pointer select-none"
     >
       <div
-        className={`relative overflow-hidden rounded-xl ${
-          isCenter ? 'border-2 border-white' : 'border border-white/30'
-        }`}
+        className="relative overflow-hidden bg-black border-[3px] border-white shadow-2xl"
         style={{
-          width: isCenter ? 170 : 140,
-          height: isCenter ? 230 : 200,
-          background: '#1a0040',
-          boxShadow: isCenter
-            ? '0 0 40px rgba(140,80,255,0.5)'
-            : '0 4px 16px rgba(0,0,0,0.5)',
+          width: cardWidth,
+          height: cardHeight,
         }}
       >
-        <img src={member.img} alt={member.name} className="w-full h-full object-cover" />
-        <div className="absolute bottom-0 w-full p-3 bg-gradient-to-t from-black/80 to-transparent">
-          <p className="text-white font-bold text-sm tracking-wide">{member.name}</p>
-          <p className="text-purple-300 text-xs">{member.role}</p>
+        <img
+          src={member.img}
+          alt={member.name}
+          className="w-full h-full object-cover"
+        />
+
+        {/* Name Overlay */}
+        <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/95 via-black/40 to-transparent">
+          <h4 className="text-white font-black text-lg md:text-2xl leading-none uppercase tracking-tighter">
+            {member.name}
+          </h4>
+          <p className="text-white/70 text-[10px] md:text-sm font-medium mt-1 uppercase tracking-wider">
+            {member.role}
+          </p>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 /* ───────────── PAGE ───────────── */
 export default function AboutPage() {
-  const [index, setIndex]           = useState(0);
-  const [textIndex, setTextIndex]   = useState(0);
-  const [modalIndex, setModalIndex] = useState(null); // null = closed
+  const [index, setIndex] = useState(0);
+  const [modalIndex, setModalIndex] = useState(null);
+  const { isMobile } = useWindowSize();
 
   const total = TEAM_MEMBERS.length;
-  const left  = (index - 1 + total) % total;
+
+  // Calculate relative indices for the 3 visible cards
+  const left = (index - 1 + total) % total;
   const right = (index + 1) % total;
 
-  useAutoSlide(() => setIndex(i => (i + 1) % total));
+  useAutoSlide(() => setIndex(i => (i + 1) % total), 5000);
 
   return (
     <>
-      <div className="relative min-h-screen flex items-center justify-center px-4">
+      <div className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden">
 
-        {/* Background */}
+        {/* Background Layer */}
         <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/backgroundck.png')" }}
+          className="absolute inset-0 bg-cover bg-center pointer-events-none"
+          style={{ backgroundImage: "url('/checkered_standard.png')" }}
         />
 
-        {/* Content */}
-        <div className="relative flex flex-col items-center text-center max-w-xl w-full">
+        {/* Dark overlay for better contrast */}
+        <div className="absolute inset-0 bg-black/60 pointer-events-none" />
 
-          {/* Cards */}
-          <div className="flex items-center justify-center mb-6">
-            <MemberCard member={TEAM_MEMBERS[left]}  position="left"   onClick={() => setModalIndex(left)}  />
-            <MemberCard member={TEAM_MEMBERS[index]} position="center" onClick={() => setModalIndex(index)} />
-            <MemberCard member={TEAM_MEMBERS[right]} position="right"  onClick={() => setModalIndex(right)} />
-          </div>
+        {/* Carousel Container */}
+        <div className="relative flex items-center justify-center w-full h-[500px]">
+          <AnimatePresence mode="popLayout">
+            <MemberCard
+              key={TEAM_MEMBERS[left].id}
+              member={TEAM_MEMBERS[left]}
+              position="left"
+              onClick={() => setIndex(left)}
+              isMobile={isMobile}
+            />
+            <MemberCard
+              key={TEAM_MEMBERS[index].id}
+              member={TEAM_MEMBERS[index]}
+              position="center"
+              onClick={() => setModalIndex(index)}
+              isMobile={isMobile}
+            />
+            <MemberCard
+              key={TEAM_MEMBERS[right].id}
+              member={TEAM_MEMBERS[right]}
+              position="right"
+              onClick={() => setIndex(right)}
+              isMobile={isMobile}
+            />
+          </AnimatePresence>
+        </div>
 
-          {/* Date */}
-          <h3 className="text-white text-3xl tracking-[0.4em] mb-3">24TH OF APRIL</h3>
-
-          {/* Text */}
-          <p className="text-white/80 text-sm leading-relaxed mb-3 px-2">
-            {TEXT_PAGES[textIndex]}
-          </p>
-
-          {/* Text pagination */}
-          <div className="flex gap-4">
-            {textIndex > 0 && (
-            <button
-                onClick={() => setTextIndex(p => p - 1)}
-                className="w-10 h-10 flex items-center justify-center border border-white/20 bg-white/10 text-white rounded-md"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M9 6l6 6-6 6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-            </button>
-            )}
-            {textIndex < TEXT_PAGES.length - 1 && (
-              <button
-                onClick={() => setTextIndex(p => p + 1)}
-                className="w-10 h-10 flex items-center justify-center border border-white/20 bg-white/10 text-white rounded-md"
-              >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M15 18l-6-6 6-6"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              </button>
-            )}
-          </div>
+        {/* Footer Title */}
+        <div className="absolute bottom-42 md:bottom-20 text-center">
+          <h2 className="text-white text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none flex items-center gap-4">
+            <span>TEAM</span>
+            <span className="font-press-start text-3xl md:text-5xl mt-1 opacity-100">2404</span>
+          </h2>
         </div>
       </div>
 
