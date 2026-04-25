@@ -23,7 +23,7 @@ const TEAM_MEMBERS = [
     role: 'COO',
     img: '/team/shile.png',
     quote: "No one is coming to save you, get the work done.",
-    skills: ['Adaptation', 'Leadership', 'Finance'],
+    skills: ['Unreal Engine', 'Product Manager, Leadership', 'Finance'],
     topGames: ['God of war', 'Call of Duty', 'Last of Us'],
     relationshipStatus: 'Single asf',
     instagram: 'https://www.instagram.com/_t.o.n.y_____?igsh=MXNwZWhhaDZ5dnF5MQ%3D%3D&utm_source=qr',
