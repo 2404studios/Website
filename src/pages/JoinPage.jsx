@@ -3,15 +3,14 @@ import { Toaster, toast } from "sonner";
 import confetti from "canvas-confetti";
 import { motion } from 'framer-motion';
 
+
+const BREVO_API_KEY = import.meta.env.VITE_BREVO_API_KEY;
+const BREVO_LIST_ID = 4;
+
 export default function JoinPage({ isActive }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [status, setStatus] = useState("idle");
-
-  // 🔥 Wake up server on load (Render sleep fix)
-  useEffect(() => {
-    fetch("https://waitlist-v0.onrender.com/healthz").catch(() => { });
-  }, []);
 
   const fireConfetti = () => {
     confetti({
@@ -21,62 +20,58 @@ export default function JoinPage({ isActive }) {
     });
   };
 
-  // ✅ NEW submit handler
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
       setStatus("loading");
 
       try {
-        const res = await fetch(
-          "https://waitlist-v0.onrender.com/waitlist",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name,
-              email,
-            }),
-          }
-        );
+        const res = await fetch("https://api.brevo.com/v3/contacts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "api-key": BREVO_API_KEY,
+          },
+          body: JSON.stringify({
+            email,
+            attributes: { FIRSTNAME: name },
+            listIds: [BREVO_LIST_ID],
+            updateEnabled: false, // set true if you want to update existing contacts
+          }),
+        });
 
-        const data = await res.json();
-
-        // 🔴 Handle duplicate email (409)
-        if (res.status === 409) {
-          setStatus("idle");
-          toast.error("You’re already on the waitlist 👀");
+        // 204 = success, 400 with code "duplicate_parameter" = already exists
+        if (res.status === 204 || res.status === 201) {
+          setStatus("success");
+          setName("");
+          setEmail("");
+          fireConfetti();
+          toast.success("You're in 🚀", {
+            description: "Welcome to 2404 Originals",
+          });
           return;
         }
 
-        // 🔴 Other errors
-        if (!res.ok) {
-          throw new Error(data?.message || "Failed to join waitlist");
+        const data = await res.json();
+
+        // Brevo returns 400 with "Contact already exist" for duplicates
+        if (res.status === 400 && data?.message?.toLowerCase().includes("already exist")) {
+          setStatus("idle");
+          toast.error("You're already on the waitlist 👀");
+          return;
         }
 
-        // ✅ success
-        setStatus("success");
-        setName("");
-        setEmail("");
-
-        fireConfetti();
-
-        toast.success("You’re in 🚀", {
-          description: "Welcome to 2404 Originals",
-        });
+        // Any other error
+        throw new Error(data?.message || "Failed to join waitlist");
 
       } catch (err) {
         console.error(err);
         setStatus("error");
-
         toast.error("Something went wrong. Try again.");
       }
     },
     [name, email]
   );
-
 
   return (
     <div
@@ -184,7 +179,7 @@ export default function JoinPage({ isActive }) {
         </form>
 
         <p className="text-xs text-white/40 mt-6">
-          No Spam! We’ll only send you updates about 2404 Journey and the occasional memes.
+          No Spam! We'll only send you updates about 2404 Journey and the occasional memes.
         </p>
       </motion.div>
     </div>

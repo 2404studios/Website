@@ -33,7 +33,7 @@ export default function SocialPage({ isActive }) {
     },
     {
       name: 'TikTok',
-      url: 'https://tiktok.com/@2404studios',
+      url: 'https://tiktok.com/@2404_studios',
       icon: (
         <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
           <path d="M21 8.5c-2.1 0-4-1.1-5.1-2.8-.9-1.3-1.2-2.7-1.2-4.2h-3.4v13.6c0 1.5-1.2 2.7-2.7 2.7S6 16.6 6 15.1s1.2-2.7 2.7-2.7c.3 0 .6 0 .9.1V9.2c-.3 0-.6-.1-.9-.1-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6v-6.1c1.4 1.2 3.2 1.9 5 1.9V8.5z" />
@@ -81,7 +81,7 @@ export default function SocialPage({ isActive }) {
         </h2>
 
         <p className="text-white italic md:text-base mb-10 md:mb-14 font-bold">
-          We are Everywhere @2404studios
+          We are Everywhere @2404 STUDIOS
         </p>
 
         <div className="flex flex-wrap gap-5 md:gap-16 justify-center items-center">
