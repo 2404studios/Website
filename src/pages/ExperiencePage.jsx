@@ -6,43 +6,43 @@ export default function ExperiencePage({ isActive }) {
   const videoList = [
     {
       src: '/vid/Driver_compressed.mp4',
-      poster: '/loading_media.png'
+      poster: '/vid/driver_cover.png'
     },
     {
       src: '/vid/favourAnimation_compressed.mp4',
-      poster: '/loading_media.png'
+      poster: '/vid/favourAnimation.png'
     },
     {
       src: '/vid/KNC_compressed.mp4',
-      poster: '/loading_media.png'
+      poster: '/vid/KingdomsAndCards.png'
     },
     {
       src: '/vid/LocusGodot_compressed.mp4',
-      poster: '/loading_media.png'
+      poster: '/vid/LocusGodot.png'
     },
     {
       src: '/vid/LocusUnreal_compressed.mp4',
-      poster: '/loading_media.png'
+      poster: '/vid/LocusUnreal.png'
     },
     {
       src: '/vid/Mosun_compressed.mp4',
-      poster: '/loading_media.png'
+      poster: '/vid/MosunCover.png'
     },
     {
       src: '/vid/Nature_compressed.mp4',
-      poster: '/loading_media.png'
+      poster: '/vid/NatureCover.png'
     },
     {
       src: '/vid/PitRush_compressed.mp4',
-      poster: '/loading_media.png'
+      poster: '/vid/PitRush.png'
     },
     {
       src: '/vid/StillWalking_compressed.mp4',
-      poster: '/loading_media.png'
+      poster: '/vid/StillWalkingCover.png'
     },
     {
       src: '/vid/Swordsman_compressed.mp4',
-      poster: '/loading_media.png'
+      poster: '/vid/SwordsMan.png'
     }
   ];
 
