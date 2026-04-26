@@ -10,10 +10,10 @@ const ReelsContainer = React.memo(function ReelsContainer({ videos = [], isActiv
       videos.length > 0
         ? videos
         : Array.from({ length: 4 }, () => ({
-            src: '',
-            poster: '',
-            placeholder: true,
-          }));
+          src: '',
+          poster: '',
+          placeholder: true,
+        }));
 
     return [...base, ...base]; // duplicate
   }, [videos]);
@@ -28,7 +28,7 @@ const ReelsContainer = React.memo(function ReelsContainer({ videos = [], isActiv
             if (video.dataset.src && !video.src) {
               video.src = video.dataset.src;
             }
-            video.play().catch(() => {});
+            video.play().catch(() => { });
           } else {
             video.pause();
           }
@@ -80,12 +80,11 @@ const ReelsContainer = React.memo(function ReelsContainer({ videos = [], isActiv
                 ref={(el) => setVideoRef(el, i)}
                 data-src={item.src}
                 poster={item.poster}
-                autoPlay
-                loop
+                preload="none" // Don't load until needed
                 muted
+                loop
                 playsInline
                 className="w-full h-full object-cover"
-                preload="none"
               />
             )}
           </div>
