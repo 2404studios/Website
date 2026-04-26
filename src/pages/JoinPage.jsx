@@ -125,7 +125,7 @@ export default function JoinPage({ isActive }) {
             </div>
 
             <div className="border border-white/20 bg-white/5 px-4 py-3 text-sm font-bold rounded-md flex items-center gap-4">
-              <img src="/logo.svg" className="w-10 h-8 flex-shrink-0" />
+              <img src="/2404_network.svg" className="w-10 h-8 flex-shrink-0" />
               <span className="text-left">2404 Network account with early bonuses Unlocked.</span>
             </div>
 
