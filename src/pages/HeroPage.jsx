@@ -1,6 +1,23 @@
 import { motion } from "framer-motion";
+import { useVideoPreload } from '../hooks/useVideoPreload';
+
+const EXPERIENCE_VIDEOS = [
+  '/vid/Driver_compressed.mp4',
+  '/vid/favourAnimation_compressed.mp4',
+  '/vid/KNC_compressed.mp4',
+  '/vid/LocusGodot_compressed.mp4',
+  '/vid/LocusUnreal_compressed.mp4',
+  '/vid/Mosun_compressed.mp4',
+  '/vid/Nature_compressed.mp4',
+  '/vid/PitRush_compressed.mp4',
+  '/vid/StillWalking_compressed.mp4',
+  '/vid/Swordsman_compressed.mp4'
+];
 
 export default function HeroPage({ isActive }) {
+  // Start preloading experience page videos immediately
+  useVideoPreload(EXPERIENCE_VIDEOS, 0);
+
   const headline1 = "BIG DREAMS.";
   const headline2 = "BOLD GAMES.";
   const body = "We are having irresistible fun and we are here to take the world with us. Africa’s greatest studio in the making...";
