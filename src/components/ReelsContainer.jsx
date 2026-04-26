@@ -80,11 +80,12 @@ const ReelsContainer = React.memo(function ReelsContainer({ videos = [], isActiv
                 ref={(el) => setVideoRef(el, i)}
                 data-src={item.src}
                 poster={item.poster}
-                preload="none" // Don't load until needed
-                muted
+                autoPlay
                 loop
+                muted
                 playsInline
                 className="w-full h-full object-cover"
+                preload="none"
               />
             )}
           </div>

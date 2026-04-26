@@ -5,43 +5,43 @@ export default function ExperiencePage({ isActive }) {
   // Sample testing array with actual .mp4 links - used only one mp4 link in the public folder
   const videoList = [
     {
-      src: '/vid/Driver.mp4',
+      src: '/vid/Driver_compressed.mp4',
       poster: '/loading_media.png'
     },
     {
-      src: '/vid/favourAnimation.mp4',
+      src: '/vid/favourAnimation_compressed.mp4',
       poster: '/loading_media.png'
     },
     {
-      src: '/vid/KNC.mp4',
+      src: '/vid/KNC_compressed.mp4',
       poster: '/loading_media.png'
     },
     {
-      src: '/vid/LocusGodot.mp4',
+      src: '/vid/LocusGodot_compressed.mp4',
       poster: '/loading_media.png'
     },
     {
-      src: '/vid/LocusUnreal.mp4',
+      src: '/vid/LocusUnreal_compressed.mp4',
       poster: '/loading_media.png'
     },
     {
-      src: '/vid/Mosun.mp4',
+      src: '/vid/Mosun_compressed.mp4',
       poster: '/loading_media.png'
     },
     {
-      src: '/vid/Nature.mp4',
+      src: '/vid/Nature_compressed.mp4',
       poster: '/loading_media.png'
     },
     {
-      src: '/vid/PitRush.mp4',
+      src: '/vid/PitRush_compressed.mp4',
       poster: '/loading_media.png'
     },
     {
-      src: '/vid/StillWalking.mp4',
+      src: '/vid/StillWalking_compressed.mp4',
       poster: '/loading_media.png'
     },
     {
-      src: '/vid/Swordsman.mp4',
+      src: '/vid/Swordsman_compressed.mp4',
       poster: '/loading_media.png'
     }
   ];
